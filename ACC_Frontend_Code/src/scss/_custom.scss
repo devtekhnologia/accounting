@@ -1,0 +1,951 @@
+// Here you can add other styles
+
+
+.header_brand_logo {
+  margin-right: auto !important;
+}
+
+.sidebar {
+  --cui-sidebar-bg: linear-gradient(270deg, #0A2E73, #16181C);
+}
+
+
+.sidebar-nav .nav-link:hover {
+  font-weight: 700;
+}
+
+
+.sidebar-brand {
+  background: #ffffff;
+  border-bottom: 10px;
+  border-bottom-color: black;
+}
+
+// .sidebar_icon_color{
+//   color: #0A2E73;
+// }
+
+//--------------------------------Signup Screen----------------------------------------------//
+
+.input_fields {
+  background-color: #F3F4F6;
+  border-color: #F3F4F6;
+}
+
+
+.signup_background {
+  background-image: url('../assets/images/reg_login/money_count_signup.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup_background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(1px);
+  z-index: 1;
+}
+
+//--------------------------------Login Screen----------------------------------------------//
+
+
+
+#bg-light {
+  background-color: #f8f9fa !important;
+}
+
+
+//--COMMON
+.but_color {
+  background-color: #0A2E73;
+  border-color: #0A2E73;
+}
+
+//--COMMON
+#but_color {
+  background-color: #0A2E73;
+  border-color: #0A2E73;
+}
+
+//--COMMON
+#but_color1 {
+  background-color: #50ca83;
+  border-color: #50ca83;
+  color: white;
+}
+
+//--COMMON
+.bg__color {
+  background-color: #0A2E73;
+  color: white;
+}
+
+//--COMMON
+#bg__color {
+  background-color: #0A2E73;
+  color: white;
+  text-align: center;
+}
+
+//--COMMON
+#bg__color1 {
+  background-color: #3de081;
+}
+
+
+/* Login Background CSS */
+
+.login_background {
+  background-image: url('../assets/images/reg_login/money_count_new.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login_background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+}
+
+//-------------------------------Admin screens--------------------------//
+//----------All Firms------------//
+// .custom-table {
+//   border: 15px solid #9095A0;
+// }
+
+.button_shadow {
+  border-color: white;
+  box-shadow: 4px 4px 20px rgb(207, 207, 207);
+}
+
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid rgb(224, 224, 224);
+}
+
+#sss {
+  background-color: white;
+  color: #0A2E73;
+  /* Optional: to make the header text white for better contrast */
+}
+
+// .allfirms_title_mainrow{
+
+// }
+
+.allfirms_title_row {
+  background: linear-gradient(270deg, #999999, #0A2E73);
+
+  // margin-left: 1000px;
+}
+
+.allfirms_table_row {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+//-----------------------Create Firm --------------------------//
+
+
+.allfirms_icon_title_row {
+  background: linear-gradient(270deg, #999999, #0A2E73);
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+
+
+//-----------------------Payment CSS --------------------------//
+//------------Desktop and Laptop Responsive---------//
+.bg_color_blue_white {
+  background: linear-gradient(#0A2E73, #D9D9D9);
+}
+
+
+@media (min-width: 1200px) and (max-width: 1308px) {
+  .make_pay_block_col {
+    column-width: 500px;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  .make_pay_label {
+    column-width: 40px;
+  }
+
+  .make_pay_select_firm {
+    column-width: 160px;
+  }
+
+  .make_pay_select_acc {
+    column-width: 160px;
+  }
+}
+
+@media (min-width: 1309px) and (max-width: 1368px) {
+  .make_pay_block_col {
+    column-width: 500px;
+    margin-left: 60px;
+    margin-right: 60px;
+  }
+
+  .make_pay_label {
+    column-width: 40px;
+  }
+
+  .make_pay_select_firm {
+    column-width: 180px;
+  }
+
+  .make_pay_select_acc {
+    column-width: 180px;
+  }
+}
+
+@media (min-width: 1369px) and (max-width: 1700px) {
+  .make_pay_block_col {
+    column-width: 600px;
+    margin-left: 120px;
+    margin-right: 120px;
+  }
+
+  .make_pay_label {
+    column-width: 40px;
+  }
+
+  .make_pay_select_firm {
+    column-width: 180px;
+  }
+
+  .make_pay_select_acc {
+    column-width: 180px;
+  }
+}
+
+
+@media (min-width: 1701px) and (max-width: 2560px) {
+  .make_pay_block_col {
+    column-width: 550px;
+    margin-left: 300px;
+    margin-right: 300px;
+  }
+
+  .make_pay_select_firm {
+    column-width: 200px;
+  }
+
+  .make_pay_select_acc {
+    column-width: 200px;
+  }
+}
+
+
+
+//--------------------------COMMON CSS ------------------------------------------------//
+
+//--COMMON
+.reg_step2_card {
+  max-width: 60rem;
+  height: 100%;
+}
+
+//--Common
+.reg_step2_card_header {
+  background-color: #0A2E73;
+  color: white;
+  text-align: center;
+}
+
+
+//--Common
+.sut_cardbody {
+  background: linear-gradient(#FFFFFF, #E2EAFF);
+}
+
+// .sut_radiobutton {}
+
+//--Common
+.reg_step2_submit_button {
+  font-size: 17px;
+  width: 25%;
+}
+
+
+//--------------------------COMMON CSS ------------------------------------------------//
+
+//COMMON
+.schol_det_cardbody {
+  padding-top: 4%;
+  padding-left: 12%;
+  padding-right: 12%;
+
+}
+
+//--------------------------------
+
+//--------------------------Admin Screens------------------------------------------------//
+
+
+
+
+
+//--------------------All List Pages CSS------------------------/
+
+//COMMON
+.list_entries {
+  list-style: none;
+}
+
+//COMMON
+// .add_button,
+// .save_button,
+// .edit_button,
+// .delete_button {
+//   background-color: #1170CE;
+//   border-color: #1170CE;
+// }
+
+//COMMON
+.card_border_color_change {
+  border-color: white;
+  box-shadow: 4px 4px 20px rgb(199, 199, 199);
+}
+
+//COMMON
+#card_border_color_change {
+  border-color: white;
+  box-shadow: 4px 4px 20px rgb(199, 199, 199);
+}
+
+//COMMON
+.card_border_color_change1 {
+  border-color: white;
+  box-shadow: 4px 4px 10px rgb(199, 199, 199);
+}
+
+//COMMON
+#card_border_color_change11 {
+  border-color: rgb(19, 98, 201);
+  background-color: white;
+  color: rgb(12, 71, 148);
+  box-shadow: 4px 4px 10px rgb(199, 199, 199);
+}
+
+
+// ------------------------Dashboard Screen---------------------------/
+
+
+//COMMON
+.stud_data,
+.scan_status,
+.view {
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+
+//--------------------------ADMIN Section---------------------------------//
+
+//----------Admin Dashboard----------------//
+
+//COMMON
+#all_dash_cards:hover {
+  background-color: #002160;
+  /* Change to the desired hover color */
+}
+
+//COMMON
+#font_color {
+  color: #0A2E73;
+}
+
+//COMMON
+
+#all_dash_cards:hover #font_color {
+  color: white;
+}
+
+// // @media (max-width: 480px) {
+
+// // }
+
+// /* Media Query for low resolution  Tablets, Ipads */
+// @media (min-width: 481px) and (max-width: 767px) {
+
+// }
+
+// /* Media Query for Tablets Ipads portrait mode */
+// @media (min-width: 768px) and (max-width: 1024px) {
+
+// }
+
+// /* Media Query for Laptops and Desktops */
+// @media (min-width: 1025px) and (max-width: 1280px) {
+
+// }
+
+// /* Media Query for Large screens */
+// @media (min-width: 1281px) {
+
+// }
+
+
+/* AllUsers.css */
+.card_border_color_change {
+  border: 1px solid #ccc;
+}
+
+.allfirms_title_mainrow {
+  align-items: center;
+}
+
+.allfirms_title_row h4 {
+  margin-bottom: 0;
+}
+
+#but_color {
+  background-color: #0A2E73;
+  color: white;
+}
+
+.custom-table th,
+.custom-table td {
+  text-align: center;
+}
+
+.custom-table-header {
+  background-color: #f7f7f7;
+}
+
+.custom-table th {
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .allfirms_title_row h4 {
+    font-size: 1.25rem;
+  }
+
+  #but_color {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .allfirms_title_mainrow {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+
+//------------Phone Responsive---------//
+
+/* ---------------------------------------AllFirms--------------------------------------- */
+
+/* Style for the title row */
+// .allfirms_title_mainrow {
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   align-items: center;
+// }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .allfirms_title_mainrow {
+    flex-direction: column;
+  }
+
+  .allfirms_title_row {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .allfirms_title_mainrow .col-md-3 {
+    margin-top: 10px;
+  }
+
+  .allfirms_table_row .custom-table-header th,
+  .allfirms_table_row .custom-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .allfirms_table_row .custom-table {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .allfirms_title_mainrow {
+    justify-content: start;
+  }
+
+  .allfirms_title_row {
+    flex-direction: column;
+  }
+
+  .allfirms_title_row .col-md-1,
+  .allfirms_title_row .col-md-4 {
+    text-align: center;
+  }
+
+  .allfirms_table_row {
+    overflow-x: auto;
+  }
+}
+
+
+@media (max-width: 425px) {
+
+  //----Same for All Firms and Create Firm
+  .title_font {
+    font-size: medium;
+  }
+
+  //----Same for All Firms and Create Firm
+  .sidebar_icon_color {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+
+/* ---------------------------------------Create Firm--------------------------------------- */
+
+/* Responsive styles for mobile devices with a width of 425px or less */
+@media (max-width: 425px) {
+  .allfirms_icon_title_row .col-xs-1 {
+    width: 50%;
+  }
+
+  .allfirms_table_row {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+
+
+
+
+  // .cf_acc_bt_row Button {
+  //   margin-left: 220px;
+  // }
+
+}
+
+/* ---------------------------------------Firm Accounts--------------------------------------- */
+
+// .facc_sel_firm_col {
+//   width: 200px;
+// }
+
+//----------All PAyments----------//
+
+@media (max-width: 576px) {
+
+  .allf_tot_bal {
+    padding-right: 10px;
+  }
+
+}
+
+//---------------------------//
+//----------All PAyments----------//
+
+.allpay_datefil_col {
+  display: flex;
+  gap: 10px;
+}
+
+//--COMMON
+#fil_but_color {
+  background-color: #0A2E73;
+  border-color: #0A2E73;
+}
+
+#fil_but_color {
+  background-color: #0A2E73;
+  color: white;
+}
+
+@media (max-width: 768px) {
+
+  #fil_but_color {
+    width: 30%;
+    margin-top: 10px;
+    margin-right: 90px;
+  }
+
+}
+
+//------------------------------//
+
+@media (min-width: 1800px) {
+  .facc_sel_firm_col {
+    column-width: 380px;
+  }
+
+  //----AllPaymt---//
+  .allpay_datefil_but {
+    column-width: 50px;
+  }
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 40%;
+  }
+
+  //----Login---///
+
+//--I have used these '.login_log_bt_col' and '.login_signup_bt_col' commonly for Login and Signup screens-------------------------------------------------------------//
+  .login_log_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 80%;
+  }
+
+  .login_signup_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 80%;
+  }
+
+}
+
+
+@media (min-width: 1351px) and (max-width: 1799px) {
+  .facc_sel_firm_col {
+    column-width: 300px;
+  }
+
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 40%;
+  }
+
+  //----Login---///
+
+  .login_log_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 40%;
+    margin-left: 25px;
+  }
+
+  .login_signup_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 40%;
+    padding-right: 40%;
+    margin-left: 25px;
+  }
+
+}
+
+@media (min-width: 900px) and (max-width: 1350px) {
+  .facc_sel_firm_col {
+    column-width: 250px;
+  }
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 35%;
+    padding-right: 35%;
+  }
+
+  //----Login---///
+
+  .login_log_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 35%;
+    padding-right: 35%;
+    margin-left: 20px;
+  }
+
+  .login_signup_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 35%;
+    padding-right: 35%;
+    margin-left: 20px;
+  }
+
+}
+
+@media (min-width: 500px) and (max-width: 899px) {
+  .facc_sel_firm_col {
+    column-width: 245px;
+  }
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 35%;
+    padding-right: 35%;
+  }
+
+
+}
+
+@media (min-width: 769px) and (max-width: 899px) {
+
+  //----Login---///
+
+  .login_log_bt_col {
+    // width: 30%;
+    // justify-content: center;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+
+  .login_signup_bt_col {
+    // width: 30%;
+    // justify-content: center;
+    padding-left: 20%;
+    padding-right: 20%;
+
+  }
+
+}
+
+//----Login Screen - Login Button---///
+.login_log_bt {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+
+  //----Login Screen---///
+  //----Login Screen - Login Button Col---///
+
+  .login_log_bt_row {
+    padding-left: 35%;
+    padding-right: 35%;
+    margin-left: 50px;
+  }
+
+
+  //----Login Screen - Login Button---///
+  .login_log_bt {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  //----Login Screen - Signup Button row---///
+  .login_signup_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 20%;
+    padding-right: 20%;
+    // margin-left: 25px;
+
+  }
+
+  // //----Login Screen - Signup Button Col---///
+  // .login_signup_bt_col {
+  //   // width: 30%;
+  //   justify-content: center;
+  //   padding-left: 35%;
+  //   padding-right: 35%;
+  //   margin-left: 25px;
+  //   // margin-left: 5px;
+  // }
+
+  // .login_signup_bt{
+  //   width: 200px;
+  // }
+
+
+
+}
+
+@media (max-width: 499px) {
+  .facc_sel_firm_col {
+    column-width: 250px;
+  }
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 30%;
+    padding-right: 30%;
+  }
+
+  //----Login Screen---///
+  //----Login Screen - Login Button Col---///
+
+  .login_log_bt_row {
+    padding-left: 35%;
+    padding-right: 35%;
+    margin-left: 50px;
+  }
+
+
+  //----Login Screen - Login Button---///
+  .login_log_bt {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  //----Login Screen - Signup Button row---///
+  .login_signup_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 20%;
+    padding-right: 20%;
+    // margin-left: 25px;
+
+  }
+
+}
+
+@media (max-width: 425px) {
+  .facc_sel_firm_col {
+    column-width: 220px;
+  }
+
+  //----Create Firm Account---///
+  .cf_acc_bt_row {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 25%;
+    padding-right: 25%;
+  }
+
+  //----Login---///
+  .login_signup_bt_col {
+    // width: 30%;
+    justify-content: center;
+    padding-left: 25%;
+    padding-right: 25%;
+  }
+
+}
+
+@media (min-width: 765px) and (max-width: 850px) {
+  .facc_f_bal {
+    column-width: 250px;
+  }
+
+}
+
+@media (min-width: 765px) and (max-width: 772px) {
+  .facc_f_bal {
+    margin-right: -5px;
+  }
+
+}
+
+@media (min-width: 680px) and (max-width: 764px) {
+  .facc_f_bal {
+    margin-right: -30px;
+  }
+
+}
+
+@media (min-width: 500px) and (max-width: 769px) {
+  .facc_crea_but_col {
+    width: 30px;
+    margin-right: 50px;
+  }
+
+  .makepay_allpay_but_col {
+    width: 30px;
+    margin-right: 45px;
+  }
+
+  .crearecp_allrecp_but_col {
+    width: 20px;
+    margin-right: 50px;
+  }
+
+
+  //---Allpaymt---//
+  .allpay_datefil_but {
+    column-width: 50px;
+  }
+
+
+
+}
+
+@media (min-width: 426px) and (max-width: 465px) {
+  .allpay_datefil {
+    width: 200px;
+  }
+
+
+}
+
+@media (max-width: 499px) {
+  .facc_crea_but_col {
+    margin-right: 8px;
+  }
+
+  .makepay_allpay_but_col {
+    margin-right: 8px;
+  }
+
+  .crearecp_allrecp_but_col {
+    margin-right: 12px;
+  }
+
+}
+
+
+
+@media (max-width: 400px) {
+  .facc_crea_but_col {
+    margin-right: 8px;
+  }
+
+
+}
