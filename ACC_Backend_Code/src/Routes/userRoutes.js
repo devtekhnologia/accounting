@@ -70,7 +70,7 @@ publicRoutes.get('/show_receipt_transactions/:to_firm_id', receiptController.get
 // publicRoutes.delete('/delete_sub_ledgers/:lgr_id', userController.delete_sub_ledgers);
 publicRoutes.get('/show_firm_all_transactions/:firm_id/transactions', firmAllTransactionsController.getAllFirmTransactionsHandler);
 // publicRoutes.get('/show_day_book_transactions/:firm_id', dayBookController.dayBookHandler);
-publicRoutes.get('/show_day_book_transactions', dayBookController.dayBookHandler);
+publicRoutes.get('/show_day_book_transactions/:user_id', dayBookController.dayBookHandler);
 
 
 // publicRoutes.post('/create_transactions', createTransaction);

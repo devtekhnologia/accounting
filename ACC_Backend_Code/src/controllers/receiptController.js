@@ -5,7 +5,7 @@ const createReceipt = async (req, res) => {
     const { to_firm_id, to_gl_id, from_firm_id, from_gl_id, amount, remark } = req.body;
     const { user_id } = req.params;
 
-    if (!to_firm_id || !to_gl_id || !from_firm_id || !from_gl_id || !user_id || !amount || !remark) {
+    if (!to_firm_id || !to_gl_id || !from_firm_id || !from_gl_id || !user_id || !amount) {
       return res.status(400).send({ status: false, message: "All fields are required" });
     }
 

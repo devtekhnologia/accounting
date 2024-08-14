@@ -1,49 +1,39 @@
 const { getAllTransactionsByFirmId } = require('../models/paymentModel');
 const { getReceiptsByFirmId } = require('../models/receiptModel');
-const { getFirmsByUserId } = require('../models/dayBookModel');
+const { getFirmIdsByUserId } = require('../models/dayBookModel'); // Assuming you have a model to fetch firm_ids by user_id
 
 const dayBookHandler = async (req, res) => {
   try {
-    const { firm_id, user_id, startDate, endDate } = req.body;
+    const { user_id } = req.params;
+    const { startDate, endDate } = req.query;
+    console.log(user_id);
 
+    // // If startDate and endDate are not provided, set them to today's date
+    // if (!startDate || !endDate) {
+    //   const today = new Date().toISOString().slice(0, 10);
+    //   startDate = today;
+    //   endDate = today;
+    // }
+
+    // Fetch all firm_ids associated with the given user_id
+    const firmIdRows = await getFirmIdsByUserId(user_id);
+    console.log(firmIdRows);
+
+    // Extract firm_id from each row
+    const firmIds = firmIdRows.map(row => row.firm_id);
+    console.log(firmIds);
     let allTransactions = [];
 
-    if (firm_id) {
-      // Fetch payment transactions
+    // Fetch transactions for each firm_id
+    for (const firm_id of firmIds) {
+      console.log(firm_id);
       const paymentTransactions = await getAllTransactionsByFirmId(firm_id, startDate, endDate);
-
-      // Fetch receipt transactions
       const receiptTransactions = await getReceiptsByFirmId(firm_id, startDate, endDate);
 
-      // Add transaction type property
       const formattedPayments = paymentTransactions.map(transaction => ({ ...transaction, type: 'payment' }));
       const formattedReceipts = receiptTransactions.map(transaction => ({ ...transaction, type: 'receipt' }));
 
-      // Merge transactions
-      allTransactions = [...formattedPayments, ...formattedReceipts];
-    } else if (user_id) {
-      // Fetch all firms for the user
-      const firms = await getFirmsByUserId(user_id);
-      const firmIds = firms.map(firm => firm.firm_id);
-
-      if (firmIds.length === 0) {
-        return res.status(404).json({ status: false, message: "No firms found for the given user" });
-      }
-
-      // Fetch payment transactions and receipt transactions for all firms
-      for (const id of firmIds) {
-        const paymentTransactions = await getAllTransactionsByFirmId(id, startDate, endDate);
-        const receiptTransactions = await getReceiptsByFirmId(id, startDate, endDate);
-
-        // Add transaction type property
-        const formattedPayments = paymentTransactions.map(transaction => ({ ...transaction, type: 'payment' }));
-        const formattedReceipts = receiptTransactions.map(transaction => ({ ...transaction, type: 'receipt' }));
-
-        // Merge transactions
-        allTransactions.push(...formattedPayments, ...formattedReceipts);
-      }
-    } else {
-      return res.status(400).json({ status: false, message: "Either firm_id or user_id is required" });
+      allTransactions = [...allTransactions, ...formattedPayments, ...formattedReceipts];
     }
 
     // Remove duplicates based on transaction_id

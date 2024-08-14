@@ -74,7 +74,7 @@ const getFirmsByUserHandler = async (req, res) => {
     if (!firms || firms.length === 0) {
       return res.status(404).send({ status: false, message: 'No firms found for this user' });
     }
-
+    console.log(firms);
     // Fetch total balance for each firm and add it to the firm data
     for (const firm of firms) {
       const total_balance = await getTotalBalanceByFirmId(firm.firm_id);
