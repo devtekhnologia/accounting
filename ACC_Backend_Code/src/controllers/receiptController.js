@@ -2,7 +2,7 @@ const { createReceiptTransaction, getReceiptsByFirmId } = require('../models/rec
 
 const createReceipt = async (req, res) => {
   try {
-    const { to_firm_id, to_gl_id, from_firm_id, from_gl_id, amount, remark } = req.body;
+    const { to_firm_id, to_gl_id, from_firm_id, from_gl_id, amount, remark, trans_type } = req.body;
     const { user_id } = req.params;
 
     if (!to_firm_id || !to_gl_id || !from_firm_id || !from_gl_id || !user_id || !amount) {
@@ -10,7 +10,7 @@ const createReceipt = async (req, res) => {
     }
 
     // Create a new transaction
-    const transactionId = await createReceiptTransaction(to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark);
+    const transactionId = await createReceiptTransaction(to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, trans_type);
 
     res.status(201).send({ status: true, data: transactionId, message: 'Receipt transaction created successfully' });
   } catch (error) {

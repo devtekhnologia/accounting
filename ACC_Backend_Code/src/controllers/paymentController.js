@@ -3,14 +3,14 @@ const { createPayment, getAllTransactionsByFirmId, getPaymentById, getTotalBalan
 const createPaymentHandler = async (req, res) => {
   try {
     const { user_id } = req.params;
-    const { from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, remark } = req.body;
+    const { from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, remark, trans_type } = req.body;
 
     if (!from_gl_id || !to_gl_id || !amount || !from_firm_id || !to_firm_id || !user_id) {
       return res.status(400).send({ status: false, message: "Please provide from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, and user_id" });
     }
 
     try {
-      const transactionId = await createPayment(from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark);
+      const transactionId = await createPayment(from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type);
       return res.status(201).send({ status: true, data: { transactionId }, message: "Payment successful" });
     } catch (error) {
       return res.status(400).send({ status: false, message: error.message });
@@ -27,7 +27,7 @@ const getTransactionsByFirmIdHandler = async (req, res) => {
     const { startDate, endDate } = req.query;
     console.log('Received startDate:', startDate);
     console.log('Received endDate:', endDate);
-    
+
     const transactions = await getAllTransactionsByFirmId(from_firm_id, startDate, endDate);
 
     if (!transactions || transactions.length === 0) {

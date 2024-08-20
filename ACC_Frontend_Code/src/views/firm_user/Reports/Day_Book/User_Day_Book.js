@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { CButton, CCard, CCol, CImage, CRow } from '@coreui/react';
-import { AdminHeader, AdminSidebar } from 'src/components';
-import AllFirms_logo from 'src/assets/images/admin_dashboard_icons/AllFirms.png';
+import { AdminHeader, AdminSidebar, FirmusrHeader, FirmusrSidebar } from 'src/components';
 import { Col, Form, FormControl, FormGroup, Row, Card, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { UserContext } from 'src/context/UserContextProvider';
 import { api_url } from 'src/api/APIURL';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import reports from 'src/assets/icons/sidebar_icons/reports.png'
-
+import reports from 'src/assets/icons/sidebar_icons/reports.png';
 
 const User_Day_Book = () => {
   const { user } = useContext(UserContext);
@@ -20,8 +17,10 @@ const User_Day_Book = () => {
   const [loading, setLoading] = useState(false);
   const [totalBalance, setTotalBalance] = useState(null);
   const [hasTransactions, setHasTransactions] = useState(true);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(new Date()); // Automatically set to today's date
+  const [endDate, setEndDate] = useState(new Date()); // Automatically set to today's date
+  const [transaction_Type, setTransaction_Type] = useState('');
+
 
   useEffect(() => {
     const fetchFirms = async () => {
@@ -44,38 +43,41 @@ const User_Day_Book = () => {
   }, [selectedFirmId, startDate, endDate]);
 
   const fetchTransactions = async () => {
-    if (selectedFirmId) {
-      setLoading(true);
-      try {
+    setLoading(true);
+    try {
+      let url;
+      if (selectedFirmId) {
         const firm_id = selectedFirmId;
-        let url = `${api_url}/api/users/show_firm_all_transactions/${firm_id}/transactions`;
-
-        if (startDate) {
-          const formattedStartDate = startDate.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
-          url += `?startDate=${formattedStartDate}`;
-        }
-        if (endDate) {
-          const adjustedEndDate = new Date(endDate);
-          adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
-          const formattedEndDate = adjustedEndDate.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
-          url += startDate ? `&endDate=${formattedEndDate}` : `?endDate=${formattedEndDate}`;
-        }
-
-        const response = await fetch(url);
-        const resdata = await response.json();
-        if (!response.ok || resdata.status === false) {
-          setHasTransactions(false);
-          setTransactions([]);
-          return;
-        }
-        setTransactions(resdata.data);
-        setHasTransactions(resdata.data.length > 0);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-        setHasTransactions(false);
-      } finally {
-        setLoading(false);
+        url = `${api_url}/api/users/show_firm_all_transactions/${firm_id}/transactions`;
+        setTransaction_Type("type");
+      } else {
+        url = `${api_url}/api/users/show_day_book_transactions/${userId}`;
+        setTransaction_Type("trans_type");
       }
+
+      // Format dates as YYYY-MM-DD
+      const formattedStartDate = startDate.toLocaleDateString('en-CA');
+      const adjustedEndDate = new Date(endDate);
+      adjustedEndDate.setDate(adjustedEndDate.getDate() + 1); // Include the end date in the filter
+      const formattedEndDate = adjustedEndDate.toLocaleDateString('en-CA');
+
+      url += `?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
+
+      const response = await fetch(url);
+      const resdata = await response.json();
+      if (!response.ok || resdata.status === false) {
+        setHasTransactions(false);
+        setTransactions([]);
+        return;
+      }
+      setTransactions(resdata.data);
+      console.log(resdata.data);
+      setHasTransactions(resdata.data.length > 0);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      setHasTransactions(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,9 +102,9 @@ const User_Day_Book = () => {
 
   return (
     <div>
-      <AdminSidebar />
+      <FirmusrSidebar />
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
-        <AdminHeader />
+        <FirmusrHeader />
         <div className="body flex-grow-1 px-2">
           <>
             <CRow className='justify-content-center mb-3'>
@@ -119,42 +121,15 @@ const User_Day_Book = () => {
                         </CCol>
                       </CRow>
                     </CCol>
-
                   </CRow>
 
                   <CRow className='allfirms_table_row py-5 justify-content-center'>
                     <CCol>
-                      {/* <CRow className='justify-content-center'>
-                        <CCol className='col-md-2'>
-                          <Form>
-                            <FormGroup as={Row} className="mb-3" controlId="formUserType">
-                              <Col>
-                                <Form.Check
-                                  type="radio"
-                                  label="Firm"
-                                  name="userType"
-                                  id="firm"
-                                  inline
-                                  defaultChecked
-                                />
-                                <Form.Check
-                                  type="radio"
-                                  label="User"
-                                  name="userType"
-                                  id="user"
-                                  inline
-                                />
-                              </Col>
-                            </FormGroup>
-                          </Form>
-                        </CCol>
-                      </CRow> */}
                       <CRow className='justify-content-center mb-3'>
                         <CCol className="justify-content-start justify-content-md-start facc_sel_firm_col">
                           <Form>
                             <FormGroup as={Row} className="mb-3">
                               <Col md={11} className="justify-content-start justify-content-md-start">
-                                {/* <Form.Label className="col-md-5 mb-0">Select Firm</Form.Label> */}
                                 <FormControl
                                   as="select"
                                   value={selectedFirmId}
@@ -192,7 +167,7 @@ const User_Day_Book = () => {
                         <CCol className="allpay_datefil_col">
                           <DatePicker
                             selected={startDate}
-                            onChange={(date) => setStartDate(date)}
+                            onChange={(date) => setStartDate(date || new Date())} // Update only if a date is selected
                             selectsStart
                             startDate={startDate}
                             endDate={endDate}
@@ -202,7 +177,7 @@ const User_Day_Book = () => {
                           />
                           <DatePicker
                             selected={endDate}
-                            onChange={(date) => setEndDate(date)}
+                            onChange={(date) => setEndDate(date || new Date())} // Update only if a date is selected
                             selectsEnd
                             startDate={startDate}
                             endDate={endDate}
@@ -230,9 +205,10 @@ const User_Day_Book = () => {
                                     <thead>
                                       <tr>
                                         <th>Sr.No</th>
-                                        <th>Account</th>
+                                        <th>Transaction of Firm</th>
+                                        <th>From/To</th>
                                         <th>Transaction with Firm</th>
-                                        <th>Cr/Dr</th>
+                                        <th>Cr/Dr Amount</th>
                                         <th>Date</th>
                                         <th>Remark</th>
                                       </tr>
@@ -241,18 +217,25 @@ const User_Day_Book = () => {
                                       {transactions.map((transaction, index) => (
                                         <tr key={transaction.transaction_id}>
                                           <td>{index + 1}</td>
-                                          {transaction.to_firm_name ? (
-                                            <td>{transaction.from_gl_name}</td>
+                                          {transaction[transaction_Type] === 'payment' ? (
+                                            <td>{transaction.from_firm_name} - {transaction.from_gl_name}</td>
                                           ) : (
-                                            <td>{transaction.to_gl_name}</td>
+                                            <td>{transaction.to_firm_name} - {transaction.to_gl_name}</td>
                                           )}
 
-                                          {transaction.to_firm_name ? (
+                                          {transaction[transaction_Type] === 'payment' ? (
+                                            <td style={{ fontWeight: "500" }}>To</td>
+                                          ) : (
+                                            <td style={{ fontWeight: "500" }}>From</td>
+                                          )}
+
+                                          {transaction[transaction_Type] === 'payment' ? (
                                             <td>{transaction.to_firm_name} - {transaction.to_gl_name}</td>
                                           ) : (
                                             <td>{transaction.from_firm_name} - {transaction.from_gl_name}</td>
                                           )}
-                                          <td style={{ color: transaction.type === 'payment' ? "red" : "green" }}>{transaction.type === 'payment' ? '-' : '+'}{transaction.amount}</td>
+
+                                          <td style={{ color: transaction[transaction_Type] === 'payment' ? "red" : "green" }}>{transaction[transaction_Type] === 'payment' ? '-' : '+'}{transaction.amount}</td>
                                           <td>{new Date(transaction.transaction_date).toLocaleString()}</td>
                                           <td>{transaction.remark}</td>
                                         </tr>

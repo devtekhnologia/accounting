@@ -30,9 +30,15 @@ const dayBookHandler = async (req, res) => {
       const paymentTransactions = await getAllTransactionsByFirmId(firm_id, startDate, endDate);
       const receiptTransactions = await getReceiptsByFirmId(firm_id, startDate, endDate);
 
+      // console.log(paymentTransactions);
+      // console.log(receiptTransactions);
+
       const formattedPayments = paymentTransactions.map(transaction => ({ ...transaction, type: 'payment' }));
       const formattedReceipts = receiptTransactions.map(transaction => ({ ...transaction, type: 'receipt' }));
 
+      console.log(formattedPayments);
+      console.log(formattedReceipts);
+      
       allTransactions = [...allTransactions, ...formattedPayments, ...formattedReceipts];
     }
 

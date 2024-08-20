@@ -25,6 +25,7 @@ import payments_icon from 'src/assets/icons/sidebar_icons/payments.png'
 import receipts_icon from 'src/assets/icons/sidebar_icons/receipts.png'
 import transfers_icon from 'src/assets/icons/sidebar_icons/transfers.png'
 import reports_icon from 'src/assets/icons/sidebar_icons/reports.png'
+import DayBook_icon from 'src/assets/icons/sidebar_icons/DayBook.png'
 
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 import routes from '../../Route/Routess'
@@ -102,6 +103,13 @@ const _firmusernav = [
       // },
     ],
   },
+
+  {
+    component: CNavItem,
+    name: 'Day Book',
+    to: '/user_day_book',
+    icon: <img src={DayBook_icon} width={23} height={23} className='mx-3' />,
+  }
   // {
   //   component: CNavItem,
   //   name: 'Setting',
@@ -114,7 +122,7 @@ const _firmusernav = [
   //   to: '/adminhelp',
   //   icon: <CIcon icon={cilSpeech} />,
   // },
-
+  
 
 ]
 

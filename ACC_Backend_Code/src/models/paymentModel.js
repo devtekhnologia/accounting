@@ -17,7 +17,7 @@ const userHasAccessToFirm = async (user_id, firm_id) => {
   return results.length > 0;
 };
 
-const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark) => {
+const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type) => {
   const connection = await beginTransaction();
   try {
     const fromGLExists = await userHasGeneralLedger(from_firm_id, from_gl_id);
@@ -34,8 +34,8 @@ const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, use
     const creditQuery = 'UPDATE tbl_general_ledgers SET balance = balance + ? WHERE gl_id = ?';
     await query(creditQuery, [amount, to_gl_id], connection);
 
-    const insertTransactionQuery = 'INSERT INTO tbl_transactions (from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const result = await query(insertTransactionQuery, [from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark], connection);
+    const insertTransactionQuery = 'INSERT INTO tbl_transactions (from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const result = await query(insertTransactionQuery, [from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type], connection);
 
     await commit(connection);
     return result.insertId;
@@ -48,7 +48,7 @@ const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, use
 const getAllTransactionsByFirmId = async (from_firm_id, startDate, endDate) => {
   let sql = `
     SELECT 
-      t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark,
+      t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark, t.trans_type,
       from_gl.gl_name AS from_gl_name, 
       to_gl.gl_name AS to_gl_name,
       to_firm.firm_name AS to_firm_name,
@@ -75,7 +75,7 @@ const getAllTransactionsByFirmId = async (from_firm_id, startDate, endDate) => {
 
   sql += ' ORDER BY t.transaction_date DESC';
   // console.log('Executing SQL:', sql);
-  console.log('With parameters:', params);
+  // console.log('With parameters:', params);
 
   return await query(sql, params);
 };
@@ -83,7 +83,7 @@ const getAllTransactionsByFirmId = async (from_firm_id, startDate, endDate) => {
 
 const getPaymentById = async (transaction_id) => {
   const sql = `
-    SELECT t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id,
+    SELECT t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.trans_type,
            from_gl.firm_id AS from_firm_id, from_gl.gl_name AS from_gl_name,
            to_gl.firm_id AS to_firm_id, to_gl.gl_name AS to_gl_name,
            t.user_id

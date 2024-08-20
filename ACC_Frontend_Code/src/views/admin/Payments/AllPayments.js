@@ -233,8 +233,8 @@ const AllPayments = () => {
                                   <thead>
                                     <tr>
                                       <th>Sr.No</th>
-                                      <th>From Account</th>
-                                      <th>To Firm - Account</th>
+                                      <th>Debit From</th>
+                                      <th>Credit To</th>
                                       <th>Dr</th>
                                       <th>Date</th>
                                       <th>Remark</th>

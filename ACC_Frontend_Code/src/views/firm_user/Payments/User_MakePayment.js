@@ -121,41 +121,48 @@ const User_MakePayment = () => {
   };
 
   const confirmPayment = async () => {
-    try {
-      const payload = {
-        from_gl_id: selectedFromGLId,
-        to_gl_id: selectedToGLId,
-        amount: Number(amount),
-        from_firm_id: selectedFromFirmId,
-        to_firm_id: selectedToFirmId,
-        remark: remark
-      };
 
-      const response = await fetch(`${api_url}/api/users/payment/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+    if (modalButtonText === 'Close') {
+      setShowModal(false);
+    } else {
+      try {
+        const payload = {
+          from_gl_id: selectedFromGLId,
+          to_gl_id: selectedToGLId,
+          amount: Number(amount),
+          from_firm_id: selectedFromFirmId,
+          to_firm_id: selectedToFirmId,
+          remark: remark,
+          trans_type: 'payment'
+        };
 
-      if (!response.ok) {
-        throw new Error('Failed to process payment');
+        const response = await fetch(`${api_url}/api/users/payment/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to process payment');
+        }
+
+        const result = await response.json();
+        console.log(result);
+        setModalTitle('Payment Successful');
+        setModalMessage('Your payment has been successfully processed.');
+        setModalButtonText('Close');
+      } catch (error) {
+        console.error('Error processing payment:', error);
+        setModalTitle('Payment Failed');
+        setModalMessage('There was an error processing your payment. Please try again.');
+        setModalButtonText('Close');
+      } finally {
+        setShowModal(true);
       }
-
-      const result = await response.json();
-      console.log(result);
-      setModalTitle('Payment Successful');
-      setModalMessage('Your payment has been successfully processed.');
-      setModalButtonText('Close');
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      setModalTitle('Payment Failed');
-      setModalMessage('There was an error processing your payment. Please try again.');
-      setModalButtonText('Close');
-    } finally {
-      setShowModal(true);
     }
+
   };
 
   return (
@@ -318,7 +325,7 @@ const User_MakePayment = () => {
             {modalButtonText === 'Confirm Payment' ? 'Cancel' : 'Close'}
           </Button>
           {modalButtonText === 'Confirm Payment' && (
-            <Button variant="primary" onClick={confirmPayment}>
+            <Button id='but_color' variant="primary" onClick={confirmPayment}>
               {modalButtonText}
             </Button>
           )}

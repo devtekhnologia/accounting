@@ -117,41 +117,48 @@ const User_CreateReceipt = () => {
     };
 
     const confirmReceipt = async () => {
-        try {
-            const payload = {
-                to_firm_id: selectedToFirmId,
-                to_gl_id: selectedToGLId,
-                from_firm_id: selectedFromFirmId,
-                from_gl_id: selectedFromGLId,
-                amount: Number(amount),
-                remark: remark
-            };
 
-            const response = await fetch(`${api_url}/api/users/receipt/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+        if (modalButtonText === 'Close') {
+            setShowModal(false);
+        } else {
+            try {
+                const payload = {
+                    to_firm_id: selectedToFirmId,
+                    to_gl_id: selectedToGLId,
+                    from_firm_id: selectedFromFirmId,
+                    from_gl_id: selectedFromGLId,
+                    amount: Number(amount),
+                    remark: remark,
+                    trans_type: 'receipt'
+                };
 
-            if (!response.ok) {
-                throw new Error('Failed to process receipt');
+                const response = await fetch(`${api_url}/api/users/receipt/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to process receipt');
+                }
+
+                const result = await response.json();
+                console.log(result);
+                setModalTitle('Amount Received');
+                setModalMessage('The amount has been successfully received.');
+                setModalButtonText('Close');
+            } catch (error) {
+                console.error('Error processing receipt:', error);
+                setModalTitle('Receipt Failed');
+                setModalMessage('There was an error processing the receipt. Please try again.');
+                setModalButtonText('Close');
+            } finally {
+                setShowModal(true);
             }
-
-            const result = await response.json();
-            console.log(result);
-            setModalTitle('Amount Received');
-            setModalMessage('The amount has been successfully received.');
-            setModalButtonText('Close');
-        } catch (error) {
-            console.error('Error processing receipt:', error);
-            setModalTitle('Receipt Failed');
-            setModalMessage('There was an error processing the receipt. Please try again.');
-            setModalButtonText('Close');
-        } finally {
-            setShowModal(true);
         }
+
     };
 
     return (
@@ -305,7 +312,7 @@ const User_CreateReceipt = () => {
                         {modalButtonText === 'Confirm Receipt' ? 'Cancel' : 'Close'}
                     </Button>
                     {modalButtonText === 'Confirm Receipt' && (
-                        <Button variant="primary" onClick={confirmReceipt}>
+                        <Button id='but_color' variant="primary" onClick={confirmReceipt}>
                             {modalButtonText}
                         </Button>
                     )}

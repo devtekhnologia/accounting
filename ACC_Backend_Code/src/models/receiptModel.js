@@ -8,7 +8,7 @@ const userHasAccessToFirm = async (user_id, firm_id) => {
   return results.length > 0;
 };
 
-const createReceiptTransaction = async (to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark) => {
+const createReceiptTransaction = async (to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, trans_type) => {
   try {
     const userHasAccess = await userHasAccessToFirm(user_id, to_firm_id);
     if (!userHasAccess) {
@@ -16,10 +16,10 @@ const createReceiptTransaction = async (to_firm_id, to_gl_id, from_firm_id, from
     }
 
     const insertTransactionQuery = `
-      INSERT INTO tbl_transactions (to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, transaction_date)
-      VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      INSERT INTO tbl_transactions (to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, transaction_date, trans_type)
+      VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
     `;
-    const result = await query(insertTransactionQuery, [to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark]);
+    const result = await query(insertTransactionQuery, [to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, trans_type]);
 
     const updateGLQuery = `
       UPDATE tbl_general_ledgers
@@ -39,7 +39,7 @@ const getReceiptsByFirmId = async (to_firm_id, startDate, endDate) => {
   try {
     let sql = `
       SELECT 
-        t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark,
+        t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark, t.trans_type,
         from_gl.gl_name AS from_gl_name, 
         to_gl.gl_name AS to_gl_name,
         from_firm.firm_name AS from_firm_name,

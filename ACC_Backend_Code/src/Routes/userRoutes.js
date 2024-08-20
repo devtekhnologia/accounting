@@ -56,13 +56,14 @@ publicRoutes.put('/update_general_ledgers/:firm_id/:gl_id', geneLedgerController
 publicRoutes.delete('/delete_general_ledgers/:firm_id/:gl_id', geneLedgerController.deleteGeneralLedgerHandler);
 
 
-
+// // APIs for Payment
 publicRoutes.post('/payment/:user_id', paymentController.createPaymentHandler );
 publicRoutes.get('/show_payment_transac/:from_firm_id', paymentController.getTransactionsByFirmIdHandler );
 publicRoutes.get('/show_payment_details/:transaction_id', paymentController.getPaymentHandler);
 publicRoutes.get('/firm_total_bal/:firm_id', paymentController.getTotalBalanceByFirmIdHandler);
 
 
+// // APIs for Receipt
 
 publicRoutes.post('/receipt/:user_id', receiptController.createReceipt);
 publicRoutes.get('/show_receipt_transactions/:to_firm_id', receiptController.getReceiptsByFirm);

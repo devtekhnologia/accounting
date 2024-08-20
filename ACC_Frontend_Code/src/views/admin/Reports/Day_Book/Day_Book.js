@@ -19,6 +19,7 @@ const Day_Book = () => {
   const [hasTransactions, setHasTransactions] = useState(true);
   const [startDate, setStartDate] = useState(new Date()); // Automatically set to today's date
   const [endDate, setEndDate] = useState(new Date()); // Automatically set to today's date
+  const [transaction_Type, setTransaction_Type] = useState('');
 
   useEffect(() => {
     const fetchFirms = async () => {
@@ -37,8 +38,8 @@ const Day_Book = () => {
   }, [userId]);
 
   useEffect(() => {
-    fetchTransactions(); 
-  }, [selectedFirmId, startDate, endDate]); 
+    fetchTransactions();
+  }, [selectedFirmId, startDate, endDate]);
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -47,8 +48,10 @@ const Day_Book = () => {
       if (selectedFirmId) {
         const firm_id = selectedFirmId;
         url = `${api_url}/api/users/show_firm_all_transactions/${firm_id}/transactions`;
+        setTransaction_Type("type");
       } else {
         url = `${api_url}/api/users/show_day_book_transactions/${userId}`;
+        setTransaction_Type("trans_type");
       }
 
       // Format dates as YYYY-MM-DD
@@ -67,6 +70,7 @@ const Day_Book = () => {
         return;
       }
       setTransactions(resdata.data);
+      console.log(resdata.data);
       setHasTransactions(resdata.data.length > 0);
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -200,9 +204,10 @@ const Day_Book = () => {
                                     <thead>
                                       <tr>
                                         <th>Sr.No</th>
-                                        <th>Debit From/Credit To</th>
-                                        <th>Credit To/Debit From</th>
-                                        <th>Cr/Dr</th>
+                                        <th>Transaction of Firm</th>
+                                        <th>From/To</th>
+                                        <th>Transaction with Firm</th>
+                                        <th>Cr/Dr Amount</th>
                                         <th>Date</th>
                                         <th>Remark</th>
                                       </tr>
@@ -211,19 +216,25 @@ const Day_Book = () => {
                                       {transactions.map((transaction, index) => (
                                         <tr key={transaction.transaction_id}>
                                           <td>{index + 1}</td>
-                                          {transaction.to_firm_name ? (
+                                          {transaction[transaction_Type] === 'payment' ? (
                                             <td>{transaction.from_firm_name} - {transaction.from_gl_name}</td>
                                           ) : (
                                             <td>{transaction.to_firm_name} - {transaction.to_gl_name}</td>
                                           )}
 
-                                          {transaction.to_firm_name ? (
+                                          {transaction[transaction_Type] === 'payment' ? (
+                                            <td style={{fontWeight:"500"}} >To</td>
+                                          ) : (
+                                            <td style={{ fontWeight: "500" }}>From</td>
+                                          )}
+
+                                          {transaction[transaction_Type] === 'payment' ? (
                                             <td>{transaction.to_firm_name} - {transaction.to_gl_name}</td>
                                           ) : (
                                             <td>{transaction.from_firm_name} - {transaction.from_gl_name}</td>
                                           )}
 
-                                          <td style={{ color: transaction.type === 'payment' ? "red" : "green" }}>{transaction.type === 'payment' ? '-' : '+'}{transaction.amount}</td>
+                                          <td style={{ color: transaction[transaction_Type] === 'payment' ? "red" : "green" }}>{transaction[transaction_Type] === 'payment' ? '-' : '+'}{transaction.amount}</td>
                                           <td>{new Date(transaction.transaction_date).toLocaleString()}</td>
                                           <td>{transaction.remark}</td>
                                         </tr>

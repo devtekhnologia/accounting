@@ -69,6 +69,7 @@ const Firm_Transactions = () => {
           return;
         }
         setTransactions(resdata.data);
+        console.log(resdata.data);
         setHasTransactions(resdata.data.length > 0);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -231,8 +232,9 @@ const Firm_Transactions = () => {
                                       <tr>
                                         <th>Sr.No</th>
                                         <th>Account</th>
+                                        <th>From/To</th>
                                         <th>Transaction with Firm</th>
-                                        <th>Cr/Dr</th>
+                                        <th>Cr/Dr Amount</th>
                                         <th>Date</th>
                                         <th>Remark</th>
                                       </tr>
@@ -241,13 +243,19 @@ const Firm_Transactions = () => {
                                       {transactions.map((transaction, index) => (
                                         <tr key={transaction.transaction_id}>
                                           <td>{index + 1}</td>
-                                          {transaction.to_firm_name ? (
+                                          {transaction.type === 'payment' ? (
                                             <td>{transaction.from_gl_name}</td>
                                           ) : (
                                             <td>{transaction.to_gl_name}</td>
                                           )}
 
-                                          {transaction.to_firm_name ? (
+                                          {transaction.type === 'payment' ? (
+                                            <td style={{ fontWeight: "500" }}>To</td>
+                                          ) : (
+                                            <td style={{ fontWeight: "500" }}>From</td>
+                                          )}
+
+                                          {transaction.type === 'payment' ? (
                                             <td>{transaction.to_firm_name} - {transaction.to_gl_name}</td>
                                           ) : (
                                             <td>{transaction.from_firm_name} - {transaction.from_gl_name}</td>

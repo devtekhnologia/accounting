@@ -100,51 +100,58 @@ const CreateReceipt = () => {
     };
 
     const confirmReceipt = async () => {
-        setShowModal(false);
+        if (modalButtonText === 'Close') {
+            setShowModal(false);
+        } else {
 
-        try {
-            const payload = {
-                to_firm_id: selectedToFirmId,
-                to_gl_id: selectedToGLId,
-                from_firm_id: selectedFromFirmId,
-                from_gl_id: selectedFromGLId,
-                amount: Number(amount),
-                remark: remark
-            };
+            try {
+                const payload = {
+                    to_firm_id: selectedToFirmId,
+                    to_gl_id: selectedToGLId,
+                    from_firm_id: selectedFromFirmId,
+                    from_gl_id: selectedFromGLId,
+                    amount: Number(amount),
+                    remark: remark,
+                    trans_type: 'receipt'
+                };
 
-            const response = await fetch(`${api_url}/api/users/receipt/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+                const response = await fetch(`${api_url}/api/users/receipt/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to process receipt');
+                if (!response.ok) {
+                    throw new Error('Failed to process receipt');
+                }
+
+                const result = await response.json();
+                console.log(result);
+
+                // Show success modal
+                setShowModal(true);
+                setModalTitle('Receipt Status');
+                setModalMessage('Amount Received !!');
+                setModalButtonText('Close');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } catch (error) {
+                console.error('Error processing receipt:', error);
+
+                // Show failure modal
+                setShowModal(true);
+                setModalTitle('Receipt Status');
+                setModalMessage('Receipt Failed !!');
+                setModalButtonText('Close');
             }
-
-            const result = await response.json();
-            console.log(result);
-
-            // Show success modal
-            setShowModal(true);
-            setModalTitle('Receipt Status');
-            setModalMessage('Amount received !!');
-            setModalButtonText('Close');
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        } catch (error) {
-            console.error('Error processing receipt:', error);
-
-            // Show failure modal
-            setShowModal(true);
-            setModalTitle('Receipt Status');
-            setModalMessage('Receipt failed !!');
-            setModalButtonText('Close');
         }
+
+
+
     };
 
     return (

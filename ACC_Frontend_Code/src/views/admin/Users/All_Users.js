@@ -76,7 +76,7 @@ const All_Users = () => {
       const response = await fetch(USER_DETAILS_API_URL(user.user_id));
       if (response.ok) {
         const data = await response.json();
-        console.log("User details:", data);
+        // console.log("User details:", data);
         setFormData({
           name: data.data.usr_name,
           email: data.data.usr_email,
@@ -88,6 +88,7 @@ const All_Users = () => {
           firmId: user.firm_name
         });
         setSelectedUser(user);
+        // console.log(selectedUser);
         // setModalVisible(true);
       } else {
         console.error('Failed to fetch user details');

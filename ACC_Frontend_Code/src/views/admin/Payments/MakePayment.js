@@ -108,53 +108,57 @@ const MakePayment = () => {
   };
 
   const confirmPayment = async () => {
-    if (modalButtonText == 'Close') {
+    if (modalButtonText === 'Close') {
       setShowModal(false);
-    }
+    } else {
 
-    try {
-      const payload = {
-        from_gl_id: selectedFromGLId,
-        to_gl_id: selectedToGLId,
-        amount: Number(amount),
-        from_firm_id: selectedFromFirmId,
-        to_firm_id: selectedToFirmId,
-        remark: remark
-      };
+      try {
+        const payload = {
+          from_gl_id: selectedFromGLId,
+          to_gl_id: selectedToGLId,
+          amount: Number(amount),
+          from_firm_id: selectedFromFirmId,
+          to_firm_id: selectedToFirmId,
+          remark: remark,
+          trans_type: 'payment'
+        };
 
-      const response = await fetch(`${api_url}/api/users/payment/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+        const response = await fetch(`${api_url}/api/users/payment/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to process payment');
+        if (!response.ok) {
+          throw new Error('Failed to process payment');
+        }
+
+        const result = await response.json();
+        console.log(result);
+
+        setModalTitle('Payment Status');
+        setModalMessage('Payment Successful !!');
+        setShowModalFooter(false);
+        setModalButtonText('Close');
+        refresh();
+        // if(modalButtonText == 'Close'){
+
+        // }
+        // setShowModal(false);
+      } catch (error) {
+        console.error('Error processing payment:', error);
+        // alert('Payment failed');
+        setModalTitle('Payment Status');
+        setModalMessage('Payment Failed !!');
+        setShowModalFooter(false);
+        setModalButtonText('Close');
+        // setShowModal(false);
       }
-
-      const result = await response.json();
-      console.log(result);
-
-      setModalTitle('Payment Status');
-      setModalMessage('Payment Successful !!');
-      setShowModalFooter(false);
-      setModalButtonText('Close');
-      refresh();
-      // if(modalButtonText == 'Close'){
-
-      // }
-      // setShowModal(false);
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      // alert('Payment failed');
-      setModalTitle('Payment Status');
-      setModalMessage('Payment Failed !!');
-      setShowModalFooter(false);
-      setModalButtonText('Close');
-      // setShowModal(false);
     }
+
+
   };
 
   const refresh = () => {
@@ -322,7 +326,7 @@ const MakePayment = () => {
           {/* <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancel
           </Button> */}
-          <Button variant="primary" onClick={confirmPayment}>
+          <Button id='but_color' variant="primary" onClick={confirmPayment}>
             {modalButtonText}
           </Button>
         </Modal.Footer>
