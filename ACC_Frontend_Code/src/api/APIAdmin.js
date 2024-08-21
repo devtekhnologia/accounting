@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 
-const api_url = 'http://3.7.46.184:3007';
+const api_url = 'http://43.205.145.172:3007';
 
 
 const APIAdmin = () => {
