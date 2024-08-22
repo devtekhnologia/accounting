@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, Form, FormGroup, FormLabel, FormControl, Button, Card, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { AdminSidebar, AdminHeader } from 'src/components';
 import AllFirms_logo from 'src/assets/images/admin_dashboard_icons/AllFirms.png';
 import { UserContext } from 'src/context/UserContextProvider';
@@ -12,17 +14,13 @@ const CreateReceipt = () => {
     const { user } = useContext(UserContext);
     const userId = user.userId;
 
-    const [firms, setFirms] = useState([]);
-    const [selectedFromFirmId, setSelectedFromFirmId] = useState('');
-    const [selectedToFirmId, setSelectedToFirmId] = useState('');
-    const [fromGeneralLedgers, setFromGeneralLedgers] = useState([]);
-    const [toGeneralLedgers, setToGeneralLedgers] = useState([]);
-    const [selectedFromGLId, setSelectedFromGLId] = useState('');
-    const [selectedToGLId, setSelectedToGLId] = useState('');
+    const [firmGlPairs, setFirmGlPairs] = useState([]);
+    const [selectedToFirmGl, setSelectedToFirmGl] = useState('');
+    const [selectedFromFirmGl, setSelectedFromFirmGl] = useState('');
+    
     const [amount, setAmount] = useState('');
     const [remark, setRemark] = useState('');
-    const [loadingFromGL, setLoadingFromGL] = useState(false);
-    const [loadingToGL, setLoadingToGL] = useState(false);
+    const [transactionDate, setTransactionDate] = useState(new Date()); // New state for date
     const [amountError, setAmountError] = useState(''); // New state for amount error
     const [showModal, setShowModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
@@ -30,57 +28,21 @@ const CreateReceipt = () => {
     const [modalButtonText, setModalButtonText] = useState('');
 
     useEffect(() => {
-        const fetchFirms = async () => {
+        const firmGlPairs = async () => {
             try {
-                const response = await fetch(`${api_url}/api/users/get_all_firms_by_user/${userId}`);
+                const response = await fetch(`${api_url}/api/users/firm_ledger_pairs/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
                 const resdata = await response.json();
-                setFirms(resdata.data);
+                setFirmGlPairs(resdata.data);
             } catch (error) {
                 console.error('Error fetching firms:', error);
             }
         };
-        fetchFirms();
+        firmGlPairs();
     }, [userId]);
 
-    const fetchGeneralLedgers = async (firm_id) => {
-        try {
-            const response = await fetch(`${api_url}/api/users/get_general_ledgers/${firm_id}`);
-            if (!response.ok) {
-                throw new Error('No GLs here');
-            }
-            const data = await response.json();
-            return data.data;
-        } catch (error) {
-            console.error('Error fetching data of GLs:', error);
-        }
-    };
-
-    useEffect(() => {
-        const loadGeneralLedgers = async () => {
-            if (selectedFromFirmId) {
-                setLoadingFromGL(true);
-                const generalLedgers = await fetchGeneralLedgers(selectedFromFirmId);
-                setFromGeneralLedgers(generalLedgers);
-                setLoadingFromGL(false);
-            }
-        };
-        loadGeneralLedgers();
-    }, [selectedFromFirmId]);
-
-    useEffect(() => {
-        const loadGeneralLedgers = async () => {
-            if (selectedToFirmId) {
-                setLoadingToGL(true);
-                const generalLedgers = await fetchGeneralLedgers(selectedToFirmId);
-                setToGeneralLedgers(generalLedgers);
-                setLoadingToGL(false);
-            }
-        };
-        loadGeneralLedgers();
-    }, [selectedToFirmId]);
 
     const handleSaveReceipt = () => {
         // Reset the amount error state
@@ -105,6 +67,10 @@ const CreateReceipt = () => {
         } else {
 
             try {
+
+                const [selectedToFirmId, selectedToGLId] = selectedToFirmGl.split('-');
+                const [selectedFromFirmId, selectedFromGLId] = selectedFromFirmGl.split('-');
+
                 const payload = {
                     to_firm_id: selectedToFirmId,
                     to_gl_id: selectedToGLId,
@@ -112,7 +78,16 @@ const CreateReceipt = () => {
                     from_gl_id: selectedFromGLId,
                     amount: Number(amount),
                     remark: remark,
-                    trans_type: 'receipt'
+                    trans_type: 'receipt',
+                    transaction_date: transactionDate.toLocaleDateString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                    }) // Added date to payload
                 };
 
                 const response = await fetch(`${api_url}/api/users/receipt/${userId}`, {
@@ -129,6 +104,16 @@ const CreateReceipt = () => {
 
                 const result = await response.json();
                 console.log(result);
+                console.log(transactionDate);
+                console.log(transactionDate.toLocaleDateString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                }));
 
                 // Show success modal
                 setShowModal(true);
@@ -196,27 +181,15 @@ const CreateReceipt = () => {
                                                                 <Col className='make_pay_select_firm'>
                                                                     <Form.Control
                                                                         as="select"
-                                                                        value={selectedToFirmId}
+                                                                        value={selectedToFirmGl}
                                                                         className="form-select"
-                                                                        onChange={(e) => setSelectedToFirmId(e.target.value)}
+                                                                        onChange={(e) => setSelectedToFirmGl(e.target.value)}
                                                                     >
-                                                                        <option value="">Select Firm</option>
-                                                                        {firms.map((firm) => (
-                                                                            <option key={firm.firm_id} value={firm.firm_id}>{firm.firm_name}</option>
-                                                                        ))}
-                                                                    </Form.Control>
-                                                                </Col>
-                                                                <Col className='make_pay_select_acc'>
-                                                                    <Form.Control
-                                                                        as="select"
-                                                                        value={selectedToGLId}
-                                                                        className="form-select"
-                                                                        onChange={(e) => setSelectedToGLId(e.target.value)}
-                                                                        disabled={!selectedToFirmId || loadingToGL}
-                                                                    >
-                                                                        <option value="">Select Your Firm Account</option>
-                                                                        {toGeneralLedgers.map((gl) => (
-                                                                            <option key={gl.gl_id} value={gl.gl_id}>{gl.gl_name}</option>
+                                                                        <option value="">Select Firm - Account</option>
+                                                                        {firmGlPairs.map((pair) => (
+                                                                            <option key={`${pair.firm_id}-${pair.gl_id}`} value={`${pair.firm_id}-${pair.gl_id}`}>
+                                                                                {pair.firm_name} - {pair.gl_name}
+                                                                            </option>
                                                                         ))}
                                                                     </Form.Control>
                                                                 </Col>
@@ -226,33 +199,21 @@ const CreateReceipt = () => {
                                                                 <Col className='make_pay_select_firm'>
                                                                     <Form.Control
                                                                         as="select"
-                                                                        value={selectedFromFirmId}
+                                                                        value={selectedFromFirmGl}
                                                                         className="form-select"
-                                                                        onChange={(e) => setSelectedFromFirmId(e.target.value)}
+                                                                        onChange={(e) => setSelectedFromFirmGl(e.target.value)}
                                                                     >
-                                                                        <option value="">Select Firm</option>
-                                                                        {firms.map((firm) => (
-                                                                            <option key={firm.firm_id} value={firm.firm_id}>{firm.firm_name}</option>
-                                                                        ))}
-                                                                    </Form.Control>
-                                                                </Col>
-                                                                <Col className='make_pay_select_acc'>
-                                                                    <Form.Control
-                                                                        as="select"
-                                                                        value={selectedFromGLId}
-                                                                        className="form-select"
-                                                                        onChange={(e) => setSelectedFromGLId(e.target.value)}
-                                                                        disabled={!selectedFromFirmId || loadingFromGL}
-                                                                    >
-                                                                        <option value="">Select Your Firm Account</option>
-                                                                        {fromGeneralLedgers.map((gl) => (
-                                                                            <option key={gl.gl_id} value={gl.gl_id}>{gl.gl_name}</option>
+                                                                        <option value="">Select Firm - Account</option>
+                                                                        {firmGlPairs.map((pair) => (
+                                                                            <option key={`${pair.firm_id}-${pair.gl_id}`} value={`${pair.firm_id}-${pair.gl_id}`}>
+                                                                                {pair.firm_name} - {pair.gl_name}
+                                                                            </option>
                                                                         ))}
                                                                     </Form.Control>
                                                                 </Col>
                                                             </FormGroup>
                                                             <FormGroup as={Row} className="mb-3" controlId="formAmount">
-                                                                <FormLabel column md={3}>Amount:</FormLabel>
+                                                                <FormLabel column className='make_pay_lable' md={3}>Amount:</FormLabel>
                                                                 <Col sm={4}>
                                                                     <FormControl
                                                                         type="text"
@@ -261,6 +222,18 @@ const CreateReceipt = () => {
                                                                         onChange={(e) => setAmount(e.target.value)}
                                                                     />
                                                                     {amountError && <p style={{ color: 'red' }}>{amountError}</p>} {/* Display the amount error */}
+                                                                </Col>
+                                                            </FormGroup>
+                                                            <FormGroup as={Row} className="mb-3" controlId="formDate">
+                                                                <FormLabel column className='make_pay_lable' md={3}>Date:</FormLabel>
+                                                                <Col sm={4}>
+                                                                    <DatePicker
+                                                                        selected={transactionDate}
+                                                                        onChange={(date) => setTransactionDate(date)}
+                                                                        showTimeSelect
+                                                                        dateFormat="MMMM d, yyyy h:mm aa"
+                                                                        className="form-control"
+                                                                    />
                                                                 </Col>
                                                             </FormGroup>
                                                             <FormGroup as={Row} className="mb-3" controlId="formRemark">

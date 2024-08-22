@@ -3,6 +3,9 @@ const userController = require('../controllers/userController');
 const firmController = require('../controllers/firmController');
 
 const geneLedgerController = require('../controllers/geneLedController');
+
+const firmGenLedPairController = require('../controllers/firmGenLedPairController');
+
 const paymentController = require('../controllers/paymentController');
 const receiptController = require('../controllers/receiptController');
 const firmAllTransactionsController = require('../controllers/firmAllTransactionsController');
@@ -54,6 +57,10 @@ publicRoutes.post('/create_general_ledgers/:firm_id', geneLedgerController.creat
 publicRoutes.get('/get_general_ledgers/:firm_id', geneLedgerController.getGeneralLedgersHandler);
 publicRoutes.put('/update_general_ledgers/:firm_id/:gl_id', geneLedgerController.updateGeneralLedgerHandler);
 publicRoutes.delete('/delete_general_ledgers/:firm_id/:gl_id', geneLedgerController.deleteGeneralLedgerHandler);
+
+
+publicRoutes.get('/firm_ledger_pairs/:user_id', firmGenLedPairController.getFirmAndGeneralLedgerPairsHandler);
+publicRoutes.get('/firm_ledger_pairs_by_adding_user/:user_id', firmGenLedPairController.getFirmAndGeneralLedgerPairsByAddingUserHandler);
 
 
 // // APIs for Payment

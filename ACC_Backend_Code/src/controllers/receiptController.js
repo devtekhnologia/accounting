@@ -2,15 +2,15 @@ const { createReceiptTransaction, getReceiptsByFirmId } = require('../models/rec
 
 const createReceipt = async (req, res) => {
   try {
-    const { to_firm_id, to_gl_id, from_firm_id, from_gl_id, amount, remark, trans_type } = req.body;
+    const { to_firm_id, to_gl_id, from_firm_id, from_gl_id, amount, remark, trans_type, transaction_date } = req.body;
     const { user_id } = req.params;
 
-    if (!to_firm_id || !to_gl_id || !from_firm_id || !from_gl_id || !user_id || !amount) {
+    if (!to_firm_id || !to_gl_id || !from_firm_id || !from_gl_id || !user_id || !amount || !transaction_date) {
       return res.status(400).send({ status: false, message: "All fields are required" });
     }
 
     // Create a new transaction
-    const transactionId = await createReceiptTransaction(to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, trans_type);
+    const transactionId = await createReceiptTransaction(to_firm_id, to_gl_id, from_firm_id, from_gl_id, user_id, amount, remark, trans_type, transaction_date);
 
     res.status(201).send({ status: true, data: transactionId, message: 'Receipt transaction created successfully' });
   } catch (error) {

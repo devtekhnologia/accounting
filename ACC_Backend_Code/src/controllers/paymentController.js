@@ -3,23 +3,41 @@ const { createPayment, getAllTransactionsByFirmId, getPaymentById, getTotalBalan
 const createPaymentHandler = async (req, res) => {
   try {
     const { user_id } = req.params;
-    const { from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, remark, trans_type } = req.body;
+    const { from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, remark, trans_type, transaction_date } = req.body;
 
-    if (!from_gl_id || !to_gl_id || !amount || !from_firm_id || !to_firm_id || !user_id) {
-      return res.status(400).send({ status: false, message: "Please provide from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, and user_id" });
+    // Check if required fields are provided
+    if (!from_gl_id || !to_gl_id || !amount || !from_firm_id || !to_firm_id || !user_id || !transaction_date) {
+      return res.status(400).send({
+        status: false,
+        message: "Please provide from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, and transaction_date"
+      });
     }
 
     try {
-      const transactionId = await createPayment(from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type);
-      return res.status(201).send({ status: true, data: { transactionId }, message: "Payment successful" });
+      // Pass the transaction_date along with other parameters to createPayment
+      const transactionId = await createPayment(from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type, transaction_date);
+
+      return res.status(201).send({
+        status: true,
+        data: { transactionId },
+        message: "Payment successful"
+      });
     } catch (error) {
-      return res.status(400).send({ status: false, message: error.message });
+      return res.status(400).send({
+        status: false,
+        message: error.message
+      });
     }
   } catch (error) {
     console.error('Error processing payment:', error);
-    res.status(500).send({ status: false, message: error.message });
+    res.status(500).send({
+      status: false,
+      message: error.message
+    });
   }
 };
+
+
 
 const getTransactionsByFirmIdHandler = async (req, res) => {
   try {

@@ -201,7 +201,7 @@
   }
 
   .make_pay_select_firm {
-    column-width: 160px;
+    column-width: 250px;
   }
 
   .make_pay_select_acc {
@@ -221,7 +221,7 @@
   }
 
   .make_pay_select_firm {
-    column-width: 180px;
+    column-width: 220px;
   }
 
   .make_pay_select_acc {
@@ -229,7 +229,27 @@
   }
 }
 
-@media (min-width: 1369px) and (max-width: 1700px) {
+@media (min-width: 1369px) and (max-width: 1510px) {
+  .make_pay_block_col {
+    column-width: 500px;
+    margin-left: 60px;
+    margin-right: 60px;
+  }
+
+  .make_pay_label {
+    column-width: 40px;
+  }
+
+  .make_pay_select_firm {
+    column-width: 230px;
+  }
+
+  .make_pay_select_acc {
+    column-width: 180px;
+  }
+}
+
+@media (min-width: 1511px) and (max-width: 1700px) {
   .make_pay_block_col {
     column-width: 600px;
     margin-left: 120px;
@@ -241,7 +261,7 @@
   }
 
   .make_pay_select_firm {
-    column-width: 180px;
+    column-width: 290px;
   }
 
   .make_pay_select_acc {
@@ -258,7 +278,7 @@
   }
 
   .make_pay_select_firm {
-    column-width: 200px;
+    column-width: 320px;
   }
 
   .make_pay_select_acc {

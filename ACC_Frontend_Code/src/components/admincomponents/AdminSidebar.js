@@ -31,6 +31,7 @@ const AdminSidebar = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
+      style={{borderRadius:'0px 0px 50px 0px'}}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/admin">
         <CImage src={qpelogo} height={45} />

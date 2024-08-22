@@ -17,9 +17,10 @@ const userHasAccessToFirm = async (user_id, firm_id) => {
   return results.length > 0;
 };
 
-const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type) => {
+const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, user_id, amount, remark, trans_type, transaction_date) => {
   const connection = await beginTransaction();
   try {
+    // Check if General Ledgers are associated with the firms and user has access
     const fromGLExists = await userHasGeneralLedger(from_firm_id, from_gl_id);
     const toGLExists = await userHasGeneralLedger(to_firm_id, to_gl_id);
     const userHasAccess = await userHasAccessToFirm(user_id, from_firm_id);
@@ -28,22 +29,32 @@ const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, use
       throw new Error('General Ledger not associated with the given firm or user does not have access');
     }
 
+    // Update balances in the general ledgers
     const debitQuery = 'UPDATE tbl_general_ledgers SET balance = balance - ? WHERE gl_id = ?';
     await query(debitQuery, [amount, from_gl_id], connection);
 
     const creditQuery = 'UPDATE tbl_general_ledgers SET balance = balance + ? WHERE gl_id = ?';
     await query(creditQuery, [amount, to_gl_id], connection);
 
-    const insertTransactionQuery = 'INSERT INTO tbl_transactions (from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    const result = await query(insertTransactionQuery, [from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type], connection);
+    // Insert the transaction with the transaction_date
+    const insertTransactionQuery = `
+      INSERT INTO tbl_transactions 
+      (from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type, transaction_date) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const result = await query(insertTransactionQuery, [from_gl_id, to_gl_id, amount, from_firm_id, to_firm_id, user_id, remark, trans_type, transaction_date], connection);
 
+    // Commit the transaction
     await commit(connection);
     return result.insertId;
   } catch (error) {
+    // Rollback the transaction in case of error
     await rollback(connection);
     throw error;
   }
 };
+
+
 
 const getAllTransactionsByFirmId = async (from_firm_id, startDate, endDate) => {
   let sql = `

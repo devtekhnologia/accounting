@@ -1,104 +1,53 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, Form, FormGroup, FormLabel, FormControl, Button, Card, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { AdminSidebar, AdminHeader } from 'src/components';
-// import AdminHeader from 'src/components';
-import AllFirms_logo from 'src/assets/images/admin_dashboard_icons/AllFirms.png';
 import { UserContext } from 'src/context/UserContextProvider';
 import { api_url } from 'src/api/APIURL';
-import { Auth } from 'src/auth/AuthUser';
-import payments from 'src/assets/icons/sidebar_icons/payments.png'
-
+import payments from 'src/assets/icons/sidebar_icons/payments.png';
 
 const MakePayment = () => {
   const { user } = useContext(UserContext);
   const userId = user.userId;
-  useEffect(() => {
-    console.log(userId);
-  }, [userId]);
 
-  const [firms, setFirms] = useState([]);
-  const [selectedFromFirmId, setSelectedFromFirmId] = useState('');
-  const [selectedToFirmId, setSelectedToFirmId] = useState('');
-  const [fromGeneralLedgers, setFromGeneralLedgers] = useState([]);
-  const [toGeneralLedgers, setToGeneralLedgers] = useState([]);
-  const [selectedFromGLId, setSelectedFromGLId] = useState('');
-  const [selectedToGLId, setSelectedToGLId] = useState('');
+  const [firmGlPairs, setFirmGlPairs] = useState([]);
+  const [selectedFromFirmGl, setSelectedFromFirmGl] = useState('');
+  const [selectedToFirmGl, setSelectedToFirmGl] = useState('');
   const [amount, setAmount] = useState('');
   const [remark, setRemark] = useState('');
-  const [loadingFromGL, setLoadingFromGL] = useState(false);
-  const [loadingToGL, setLoadingToGL] = useState(false);
+  const [transactionDate, setTransactionDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
-  const [validationMessage, setValidationMessage] = useState(''); // State for validation message
-  // const [showModal2, setShowModal2] = useState(false);
-  const [modalTitle, setModalTitle] = useState(''); // State for modal message
-  const [modalMessage, setModalMessage] = useState(''); // State for modal message
-  const [showModalFooter, setShowModalFooter] = useState(false); // State for modal message
+  const [validationMessage, setValidationMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [showModalFooter, setShowModalFooter] = useState(false);
   const [modalButtonText, setModalButtonText] = useState('');
-
-  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false); // State for payment success
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchFirms = async () => {
+    const fetchFirmGlPairs = async () => {
       try {
-        const response = await fetch(`${api_url}/api/users/get_all_firms_by_user/${userId}`);
+        const response = await fetch(`${api_url}/api/users/firm_ledger_pairs/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
         const resdata = await response.json();
-        setFirms(resdata.data);
+        setFirmGlPairs(resdata.data);
       } catch (error) {
-        console.error('Error fetching firms:', error);
+        console.error('Error fetching firm-GL pairs:', error);
       }
     };
-    fetchFirms();
+    fetchFirmGlPairs();
   }, [userId]);
 
-  const fetchGeneralLedgers = async (firm_id) => {
-    try {
-      const response = await fetch(`${api_url}/api/users/get_general_ledgers/${firm_id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      return data.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    const loadGeneralLedgers = async () => {
-      if (selectedFromFirmId) {
-        setLoadingFromGL(true);
-        const generalLedgers = await fetchGeneralLedgers(selectedFromFirmId);
-        setFromGeneralLedgers(generalLedgers);
-        setLoadingFromGL(false);
-      }
-    };
-    loadGeneralLedgers();
-  }, [selectedFromFirmId]);
-
-  useEffect(() => {
-    const loadGeneralLedgers = async () => {
-      if (selectedToFirmId) {
-        setLoadingToGL(true);
-        const generalLedgers = await fetchGeneralLedgers(selectedToFirmId);
-        setToGeneralLedgers(generalLedgers);
-        setLoadingToGL(false);
-      }
-    };
-    loadGeneralLedgers();
-  }, [selectedToFirmId]);
-
   const handleSavePayment = () => {
-    // Validate amount
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
       setValidationMessage('Please enter a valid, positive amount.');
       return;
     }
 
-    // Reset validation message if validation passes
     setValidationMessage('');
     setShowModal(true);
     setModalTitle('Confirm Payment');
@@ -111,8 +60,10 @@ const MakePayment = () => {
     if (modalButtonText === 'Close') {
       setShowModal(false);
     } else {
-
       try {
+        const [selectedFromFirmId, selectedFromGLId] = selectedFromFirmGl.split('-');
+        const [selectedToFirmId, selectedToGLId] = selectedToFirmGl.split('-');
+
         const payload = {
           from_gl_id: selectedFromGLId,
           to_gl_id: selectedToGLId,
@@ -120,7 +71,16 @@ const MakePayment = () => {
           from_firm_id: selectedFromFirmId,
           to_firm_id: selectedToFirmId,
           remark: remark,
-          trans_type: 'payment'
+          trans_type: 'payment',
+          transaction_date: transactionDate.toLocaleDateString('en-CA', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          })
         };
 
         const response = await fetch(`${api_url}/api/users/payment/${userId}`, {
@@ -132,6 +92,7 @@ const MakePayment = () => {
         });
 
         if (!response.ok) {
+          
           throw new Error('Failed to process payment');
         }
 
@@ -143,29 +104,21 @@ const MakePayment = () => {
         setShowModalFooter(false);
         setModalButtonText('Close');
         refresh();
-        // if(modalButtonText == 'Close'){
-
-        // }
-        // setShowModal(false);
       } catch (error) {
         console.error('Error processing payment:', error);
-        // alert('Payment failed');
         setModalTitle('Payment Status');
         setModalMessage('Payment Failed !!');
         setShowModalFooter(false);
         setModalButtonText('Close');
-        // setShowModal(false);
       }
     }
-
-
   };
 
   const refresh = () => {
     setTimeout(() => {
       window.location.reload();
     }, 1000);
-  }
+  };
 
   return (
     <div>
@@ -209,34 +162,17 @@ const MakePayment = () => {
                                 <Col className='make_pay_select_firm'>
                                   <Form.Control
                                     as="select"
-                                    value={selectedFromFirmId}
+                                    value={selectedFromFirmGl}
                                     className='form-select'
-                                    onChange={(e) => setSelectedFromFirmId(e.target.value)}
+                                    onChange={(e) => setSelectedFromFirmGl(e.target.value)}
                                   >
-                                    <option value="">Select Firm</option>
-                                    {firms.map((firm) => (
-                                      <option key={firm.firm_id} value={firm.firm_id}>
-                                        {firm.firm_name}
+                                    <option value="">Select Firm - Account</option>
+                                    {firmGlPairs.map((pair) => (
+                                      <option key={`${pair.firm_id}-${pair.gl_id}`} value={`${pair.firm_id}-${pair.gl_id}`}>
+                                        {pair.firm_name} - {pair.gl_name}
                                       </option>
                                     ))}
                                   </Form.Control>
-                                </Col>
-                                <Col className='make_pay_select_acc'>
-                                  <Form.Control
-                                    as="select"
-                                    value={selectedFromGLId}
-                                    className='form-select'
-                                    onChange={(e) => setSelectedFromGLId(e.target.value)}
-                                    disabled={!selectedFromFirmId || loadingFromGL}
-                                  >
-                                    <option value="">Select Your Firm Account</option>
-                                    {fromGeneralLedgers.map((gl) => (
-                                      <option key={gl.gl_id} value={gl.gl_id}>
-                                        {gl.gl_name}
-                                      </option>
-                                    ))}
-                                  </Form.Control>
-                                  {loadingFromGL && <p>Loading...</p>}
                                 </Col>
                               </FormGroup>
                               <FormGroup as={Row} className="mb-3" controlId="formTo">
@@ -244,38 +180,21 @@ const MakePayment = () => {
                                 <Col className='make_pay_select_firm'>
                                   <Form.Control
                                     as="select"
-                                    value={selectedToFirmId}
+                                    value={selectedToFirmGl}
                                     className='form-select'
-                                    onChange={(e) => setSelectedToFirmId(e.target.value)}
+                                    onChange={(e) => setSelectedToFirmGl(e.target.value)}
                                   >
-                                    <option value="">Select Firm</option>
-                                    {firms.map((firm) => (
-                                      <option key={firm.firm_id} value={firm.firm_id}>
-                                        {firm.firm_name}
+                                    <option value="">Select Firm - Account</option>
+                                    {firmGlPairs.map((pair) => (
+                                      <option key={`${pair.firm_id}-${pair.gl_id}`} value={`${pair.firm_id}-${pair.gl_id}`}>
+                                        {pair.firm_name} - {pair.gl_name}
                                       </option>
                                     ))}
                                   </Form.Control>
-                                </Col>
-                                <Col className='make_pay_select_acc'>
-                                  <Form.Control
-                                    as="select"
-                                    value={selectedToGLId}
-                                    className='form-select'
-                                    onChange={(e) => setSelectedToGLId(e.target.value)}
-                                    disabled={!selectedToFirmId || loadingToGL}
-                                  >
-                                    <option value="">Select Your Firm Account</option>
-                                    {toGeneralLedgers.map((gl) => (
-                                      <option key={gl.gl_id} value={gl.gl_id}>
-                                        {gl.gl_name}
-                                      </option>
-                                    ))}
-                                  </Form.Control>
-                                  {loadingToGL && <p>Loading...</p>}
                                 </Col>
                               </FormGroup>
                               <FormGroup as={Row} className="mb-3" controlId="formAmount">
-                                <FormLabel column sm={3}>Amount :</FormLabel>
+                                <FormLabel column className='make_pay_lable' md={3}>Amount:</FormLabel>
                                 <Col sm={4}>
                                   <FormControl
                                     type="text"
@@ -285,8 +204,20 @@ const MakePayment = () => {
                                   />
                                 </Col>
                               </FormGroup>
+                              <FormGroup as={Row} className="mb-3" controlId="formDate">
+                                <FormLabel column className='make_pay_lable' md={3}>Date:</FormLabel>
+                                <Col sm={4}>
+                                  <DatePicker
+                                    selected={transactionDate}
+                                    onChange={(date) => setTransactionDate(date)}
+                                    showTimeSelect
+                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                    className="form-control"
+                                  />
+                                </Col>
+                              </FormGroup>
                               <FormGroup as={Row} className="mb-3" controlId="formRemark">
-                                <FormLabel column sm={3}>Remark :</FormLabel>
+                                <FormLabel column className='make_pay_lable' md={3}>Remark:</FormLabel>
                                 <Col sm={9}>
                                   <FormControl
                                     type="text"
@@ -296,15 +227,17 @@ const MakePayment = () => {
                                   />
                                 </Col>
                               </FormGroup>
-                              {validationMessage && (
-                                <p style={{ color: 'red' }}>{validationMessage}</p>
-                              )}
+                              <Row className='justify-content-center'>
+                                <Col sm={5}>
+                                  <Button id="but_color" type="button" onClick={handleSavePayment} className="w-100">
+                                    Make Payment
+                                  </Button>
+                                </Col>
+                              </Row>
                             </Form>
+                            {validationMessage && <p className="text-danger mt-3">{validationMessage}</p>}
                           </Card.Body>
                         </Card>
-                        <Row className='justify-content-center align-content-center mt-3 cf_acc_bt_row'>
-                          <Button id='but_color' onClick={handleSavePayment}>Pay now</Button>
-                        </Row>
                       </Col>
                     </Row>
                   </Col>
@@ -314,26 +247,23 @@ const MakePayment = () => {
           </Row>
         </Container>
       </div>
-
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalMessage}
+          <p>{modalMessage}</p>
         </Modal.Body>
-        <Modal.Footer>
-          {/* <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button> */}
-          <Button id='but_color' variant="primary" onClick={confirmPayment}>
-            {modalButtonText}
-          </Button>
-        </Modal.Footer>
+        {showModalFooter && (
+          <Modal.Footer>
+            <Button id="but_color" onClick={confirmPayment}>
+              {modalButtonText}
+            </Button>
+          </Modal.Footer>
+        )}
       </Modal>
-
     </div>
   );
-}
+};
 
 export default MakePayment;
