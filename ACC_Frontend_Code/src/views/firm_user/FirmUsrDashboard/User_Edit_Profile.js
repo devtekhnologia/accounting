@@ -8,8 +8,8 @@ import 'src/scss/_custom.scss';
 import CIcon from '@coreui/icons-react';
 import { cilUser } from '@coreui/icons';
 
-const SHOW_USER_DETAILS_API_URL = `http://43.205.145.172:3007/api/users/user_details/`;
-const UPDATE_USER_DETAILS_API_URL = `http://43.205.145.172:3007/api/users/update_user_details/`;
+const SHOW_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/user_details/`;
+const UPDATE_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/update_user_details/`;
 
 const User_Edit_Profile = () => {
   const { user } = useContext(UserContext);

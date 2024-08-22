@@ -8,8 +8,8 @@ import 'src/scss/_custom.scss';
 import Users from 'src/assets/icons/sidebar_icons/Users.png'
 
 
-const ADD_USER_API_URL = 'http://43.205.145.172:3007/api/users/add_user';
-const ASSIGN_FIRM_API_URL = 'http://43.205.145.172:3007/api/users/assign_firm_to_user';
+const ADD_USER_API_URL = 'http://20.235.150.54:3007/api/users/add_user';
+const ASSIGN_FIRM_API_URL = 'http://20.235.150.54:3007/api/users/assign_firm_to_user';
 
 const Add_Users = () => {
   const { user } = useContext(UserContext);
@@ -114,7 +114,7 @@ const Add_Users = () => {
   useEffect(() => {
     const fetchFirms = async () => {
       try {
-        const response = await fetch(`http://43.205.145.172:3007/api/users/get_all_firms_by_user/${userId}`);
+        const response = await fetch(`http://20.235.150.54:3007/api/users/get_all_firms_by_user/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
