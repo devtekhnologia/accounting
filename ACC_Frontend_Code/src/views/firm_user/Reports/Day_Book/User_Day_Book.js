@@ -17,8 +17,12 @@ const User_Day_Book = () => {
   const [loading, setLoading] = useState(false);
   const [totalBalance, setTotalBalance] = useState(null);
   const [hasTransactions, setHasTransactions] = useState(true);
-  const [startDate, setStartDate] = useState(new Date()); // Automatically set to today's date
-  const [endDate, setEndDate] = useState(new Date()); // Automatically set to today's date
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [selectedStartMonth, setSelectedStartMonth] = useState(null); // Default to the start month
+  const [selectedEndMonth, setSelectedEndMonth] = useState(null); // Default to the end month
+  const [selectedYear, setSelectedYear] = useState(null); // Default to the current year
+  const [filterType, setFilterType] = useState("byDate"); // State to store selected filter type
   const [transaction_Type, setTransaction_Type] = useState('');
 
 
@@ -55,13 +59,83 @@ const User_Day_Book = () => {
         setTransaction_Type("trans_type");
       }
 
-      // Format dates as YYYY-MM-DD
-      const formattedStartDate = startDate.toLocaleDateString('en-CA');
-      const adjustedEndDate = new Date(endDate);
-      adjustedEndDate.setDate(adjustedEndDate.getDate() + 1); // Include the end date in the filter
-      const formattedEndDate = adjustedEndDate.toLocaleDateString('en-CA');
+      if (filterType === "byDate") {
 
-      url += `?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
+        if (startDate) {
+          const formattedStartDate = startDate.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
+          url += `?startDate=${formattedStartDate}`;
+        }
+        if (endDate) {
+          // Ensure endDate includes time 23:59:59 of the selected day
+          const endDateTime = new Date(endDate);
+          endDateTime.setHours(23, 59, 59, 999); // Set time to 23:59:59.999
+          const formattedEndDate = endDateTime.toISOString().split('T')[0] + 'T23:59:59'; // Format as YYYY-MM-DDTHH:MM:SS
+          url += startDate ? `&endDate=${formattedEndDate}` : `?endDate=${formattedEndDate}`;
+        }
+      } else if (filterType === "byMonth") {
+        let startDate, endDate;
+
+        if (selectedStartMonth) {
+          const startYear = selectedStartMonth.getFullYear();
+          const startMonth = selectedStartMonth.getMonth() + 1; // Correct month
+
+          // Calculate the start date
+          startDate = new Date(startYear, startMonth - 1, 2).toISOString().split('T')[0];
+          url += `?startDate=${startDate}`;
+        }
+
+        if (selectedEndMonth) {
+          const endYear = selectedEndMonth.getFullYear();
+          const endMonth = selectedEndMonth.getMonth() + 1; // Correct month
+
+          // Calculate the last day of the end month and set time to 23:59:59
+          const endDateObj = new Date(endYear, endMonth, 0);
+          endDate = `${endYear}-${endMonth.toString().padStart(2, '0')}-${endDateObj.getDate()}T23:59:59`;
+          url += startDate ? `&endDate=${endDate}` : `?endDate=${endDate}`;
+
+
+        }
+
+
+      } else if (filterType === "by6Months") {
+
+        if (selectedStartMonth) {
+
+          const year = selectedStartMonth.getFullYear();
+          const month = selectedStartMonth.getMonth() + 1; // Correct Month
+
+          // Calculate the start date as the 1st day of the selected month
+          const startDate = new Date(year, month - 1, 2).toISOString().split('T')[0];
+
+          // Calculate the end date as the last day of the month 5 months after the selected month
+          const endDateObj = new Date(year, month + 5, 0); // 0 sets the date to the last day of the previous month
+
+          const endYear = endDateObj.getFullYear();
+          const endMonth = endDateObj.getMonth() + 1; // Convert to 1-based month index
+          const endDate = `${endYear}-${endMonth.toString().padStart(2, '0')}-${endDateObj.getDate()}T23:59:59`;
+
+          url += `?startDate=${startDate}&endDate=${endDate}`;
+
+        }
+
+      } else if (filterType === "byYear") {
+        if (selectedYear) {
+          const year = selectedYear.getFullYear();
+
+          // Start date: January 1st of the selected year
+          const startDate = `${year}-01-01T00:00:00`;
+
+          // End date: December 31st of the selected year, set time to 23:59:59
+          const endDate = `${year}-12-31T23:59:59`;
+
+
+          // Append startDate and endDate to the URL
+          url += `?startDate=${startDate}&endDate=${endDate}`;
+        }
+      }
+
+      console.log("Start Date:", startDate);
+      console.log("End Date:", endDate);
 
       const response = await fetch(url);
       const resdata = await response.json();
@@ -117,7 +191,7 @@ const User_Day_Book = () => {
                           <img className='sidebar_icon_color' src={reports} width={25} height={25} alt="All Firms Logo" />
                         </CCol>
                         <CCol className='col-7 col-md-7'>
-                          <h5 className="title_font mb-0" style={{ color: 'white' }}>Transactions</h5>
+                          <h5 className="title_font mb-0" style={{ color: 'white' }}>Day Book</h5>
                         </CCol>
                       </CRow>
                     </CCol>
@@ -157,7 +231,7 @@ const User_Day_Book = () => {
                               padding: '10px',
                               borderRadius: '5px'
                             }}>
-                              Firm Total Balance: {totalBalance}
+                              Firm Balance: {totalBalance}
                             </div>
                           )}
                         </CCol>
@@ -165,6 +239,104 @@ const User_Day_Book = () => {
 
                       <CRow className='justify-content-center mb-3'>
                         <CCol className="allpay_datefil_col">
+                          <FormGroup as={Row} className="mb-3">
+                            <Col md={11} className="justify-content-start">
+                              <FormControl
+                                as="select"
+                                value={filterType}
+                                className="form-select"
+                                onChange={(e) => setFilterType(e.target.value)}
+                                style={{ maxWidth: '100%' }}
+                              >
+                                <option value="byDate">By Date</option>
+                                <option value="byMonth">By Month</option>
+                                <option value="by6Months">By 6 Month</option>
+                                <option value="byYear">By Year</option>
+                              </FormControl>
+                            </Col>
+                          </FormGroup>
+                        </CCol>
+                      </CRow>
+
+                      <CRow className='justify-content-center mb-3'>
+
+                        <CCol className="allpay_datefil_col">
+                          {filterType === "byDate" && (
+                            <>
+                              <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                placeholderText="Start Date"
+                                className="form-control allpay_datefil"
+                                md={2}
+                              />
+                              <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                startDate={startDate}
+                                endDate={endDate}
+                                minDate={startDate}
+                                placeholderText="End Date"
+                                className="form-control allpay_datefil"
+                                md={2}
+                              />
+                            </>
+                          )}
+
+                          {filterType === "byMonth" && (
+                            <>
+                              <DatePicker
+                                selected={selectedStartMonth}
+                                onChange={(date) => setSelectedStartMonth(date || new Date())} // Update only if a month is selected
+                                dateFormat="MM/yyyy"
+                                showMonthYearPicker
+                                placeholderText="Select Start Month"
+                                className="form-control allpay_datefil"
+                                md={2}
+                              />
+                              <DatePicker
+                                selected={selectedEndMonth}
+                                onChange={(date) => setSelectedEndMonth(date || new Date())} // Update only if a month is selected
+                                dateFormat="MM/yyyy"
+                                showMonthYearPicker
+                                placeholderText="Select End Month"
+                                className="form-control allpay_datefil"
+                                md={2}
+                              />
+                            </>
+                          )}
+
+                          {filterType === "by6Months" && (
+                            <DatePicker
+                              selected={selectedStartMonth}
+                              onChange={(date) => setSelectedStartMonth(date || new Date())} // Update only if a month is selected
+                              dateFormat="MM/yyyy"
+                              showMonthYearPicker
+                              placeholderText="Select Start Month"
+                              className="form-control allpay_datefil"
+                              md={2}
+                            />
+                          )}
+
+                          {filterType === "byYear" && (
+                            <DatePicker
+                              selected={selectedYear}
+                              onChange={(date) => setSelectedYear(date || new Date())}
+                              showYearPicker
+                              dateFormat="yyyy"
+                              placeholderText="Select Year"
+                              className="form-control allpay_datefil"
+                            />
+                          )}
+
+                          <CButton onClick={fetchTransactions} id="fil_but_color" className='mt-0 allpay_datefil_but'>Filter</CButton>
+                        </CCol>
+                        
+                        {/* <CCol className="allpay_datefil_col">
                           <DatePicker
                             selected={startDate}
                             onChange={(date) => setStartDate(date || new Date())} // Update only if a date is selected
@@ -187,14 +359,14 @@ const User_Day_Book = () => {
                             md={2}
                           />
                           <CButton onClick={fetchTransactions} id="fil_but_color" className='mt-0 allpay_datefil_but'>Filter</CButton>
-                        </CCol>
+                        </CCol> */}
                       </CRow>
 
                       <CRow>
                         <Col md={12}>
                           <Form>
                             <Card className="mb-3">
-                              <Card.Header className="text-white" id='bg__color'>Firm Transactions</Card.Header>
+                              <Card.Header className="text-white" id='bg__color'>Daily Transactions</Card.Header>
                               <Card.Body>
                                 {loading ? (
                                   <p>Loading...</p>

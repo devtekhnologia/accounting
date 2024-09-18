@@ -5,6 +5,7 @@ import 'src/scss/_custom.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Routess from './Route/Routess'
 import { UserContextProvider } from './context/UserContextProvider';
+import { ChakraProvider } from '@chakra-ui/react';
 
 
 
@@ -13,7 +14,9 @@ class App extends Component {
   render() {
     return (
       <UserContextProvider>
-        <Routess />
+        <ChakraProvider>
+          <Routess />
+        </ChakraProvider>
       </UserContextProvider>
     )
   }

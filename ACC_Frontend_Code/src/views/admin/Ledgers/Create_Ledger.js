@@ -13,17 +13,21 @@ const Create_Ledger = () => {
     const [firms, setFirms] = useState([]);
     const [selectedFirmId, setSelectedFirmId] = useState('');
     const [generalLedgerName, setGeneralLedgerName] = useState('');
+    const [gl_Type, setGl_Type] = useState(false); // Changed to boolean
+    const [opening_Balance, setOpening_Balance] = useState('');
     const [selectFirmError, setSelectFirmError] = useState('');
     const [glNameError, setGLNameError] = useState('');
+    const [openBalError, setOpenBalError] = useState(''); // Added state for balance validation
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalTitle, setModalTitle] = useState('');
 
     const validateGLName = (e) => {
-        setGeneralLedgerName(e.target.value);
+        const value = e.target.value;
+        setGeneralLedgerName(value);
         setSelectFirmError('');
 
-        if (generalLedgerName.length === 0) {
+        if (value.length === 0) {
             setGLNameError('Name must be at least 2 characters long.');
             return false;
         }
@@ -31,15 +35,27 @@ const Create_Ledger = () => {
         setGLNameError('');
 
         const regex = /^[a-zA-Z\s]+$/;
-        if (generalLedgerName.length < 1) {
+        if (value.length < 1) {
             setGLNameError('Name must be at least 2 characters long.');
             return false;
-        } else if (regex.test(generalLedgerName)) {
+        } else if (regex.test(value)) {
             setGLNameError('');
             return true;
         } else {
             setGLNameError('Only letters and spaces are allowed.');
             return false;
+        }
+    };
+
+    const validateOpeningBalance = (e) => {
+        const value = e.target.value;
+        setOpening_Balance(value);
+        const decimalRegex = /^[0-9]*\.?[0-9]+$/; // Regex for decimal numbers
+
+        if (!decimalRegex.test(value) || value < 0) {
+            setOpenBalError('Enter a valid positive decimal number.');
+        } else {
+            setOpenBalError('');
         }
     };
 
@@ -65,28 +81,36 @@ const Create_Ledger = () => {
             if (selectedFirmId) {
                 setSelectFirmError('');
             }
-
+    
             if (!selectedFirmId || !generalLedgerName) {
-                setSelectFirmError('Please select a firm and enter a firm account name');
+                setSelectFirmError('Please select a firm and enter a firm account name.');
                 return;
             }
-
+    
             if (!validateGLName({ target: { value: generalLedgerName } })) {
                 setSelectFirmError('');
-                setGLNameError('Enter valid firm account name.');
+                setGLNameError('Enter a valid firm account name.');
                 return;
             }
-
+    
+            if (openBalError) {
+                setSelectFirmError('');
+                return;
+            }
+    
             const firm_id = selectedFirmId;
             const response = await axios.post(`${api_url}/api/users/create_general_ledgers/${firm_id}`, {
-                gl_name: generalLedgerName
+                gl_name: generalLedgerName,
+                gl_type: gl_Type ? '1' : '2', // Map boolean to enum type
+                open_balance: opening_Balance.trim() === '' ? '' : opening_Balance // Set to blank if empty
             });
-
+    
             if (response.status === 201) {
                 setModalTitle('Firm Account Status');
                 setModalMessage('Firm account created successfully !!');
                 setModalVisible(true);
                 setGeneralLedgerName(''); // Reset the input after successful creation
+                setOpening_Balance('');
             }
         } catch (error) {
             console.error('Error creating general ledger:', error);
@@ -95,6 +119,7 @@ const Create_Ledger = () => {
             setModalVisible(true);
         }
     };
+    
 
     return (
         <div>
@@ -141,6 +166,23 @@ const Create_Ledger = () => {
                                                     {glNameError && <div className="text-danger mb-2">{glNameError}</div>}
                                                 </Col>
                                             </Form.Group>
+                                            <Form.Group as={Row} className="mb-3" controlId="formOpeningBalance">
+                                                <Form.Label column sm={3}>Opening Balance</Form.Label>
+                                                <Col sm={6}>
+                                                    <Form.Control type="text" value={opening_Balance} onChange={validateOpeningBalance} />
+                                                    {openBalError && <div className="text-danger mb-2">{openBalError}</div>}
+                                                </Col>
+                                            </Form.Group>
+                                            <Form.Group as={Row} className="mb-3" controlId="formGLType">
+                                                <Col sm={6}>
+                                                    <Form.Check
+                                                        type="checkbox"
+                                                        label="Is it Cash"
+                                                        checked={gl_Type}
+                                                        onChange={(e) => setGl_Type(e.target.checked)}
+                                                    />
+                                                </Col>
+                                            </Form.Group>
                                             {selectFirmError && <div className="text-danger mb-2">{selectFirmError}</div>}
                                             <Row className='cf_acc_bt_row justify-content-center align-content-center'>
                                                 <Button variant="primary" id="but_color" onClick={handleCreateLedger}>Create</Button>
@@ -162,9 +204,6 @@ const Create_Ledger = () => {
                     {modalMessage}
                 </Modal.Body>
                 <Modal.Footer>
-                    {/* <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button> */}
                     <Button variant="primary" onClick={() => setModalVisible(false)}>
                         Close
                     </Button>

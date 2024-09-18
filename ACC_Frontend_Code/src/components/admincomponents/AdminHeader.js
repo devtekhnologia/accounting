@@ -17,7 +17,7 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 
 import { AdminBreadcrumb } from '../index'
 import { AdminHeaderDropdown } from './header/index'
-import qpelogo from 'src/assets/brand/accounts_brand_logo.png'
+import fin_acc_logo from 'src/assets/brand/accounts_brand_logo.png'
 
 
 const AdminHeader = () => {
@@ -34,8 +34,8 @@ const AdminHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
 
-        <CHeaderBrand className="header_brand_logo d-md-none" to="/">
-          <CImage src={qpelogo} height={45} />
+        <CHeaderBrand className="header_brand_logo d-md-none d-sm-flex" to="/">
+          <CImage src={fin_acc_logo} style={{height:"60px"}} />
         </CHeaderBrand>
 
         <CHeaderNav className="d-none d-md-flex me-auto">

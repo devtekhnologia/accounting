@@ -8,8 +8,8 @@ import 'src/scss/_custom.scss';
 import Users from 'src/assets/icons/sidebar_icons/Users.png'
 
 
-const ADD_USER_API_URL = 'http://20.235.150.54:3007/api/users/add_user';
-const ASSIGN_FIRM_API_URL = 'http://20.235.150.54:3007/api/users/assign_firm_to_user';
+const ADD_USER_API_URL = 'http://192.168.29.17:3007/api/users/add_user';
+const ASSIGN_FIRM_API_URL = 'http://192.168.29.17:3007/api/users/assign_firm_to_user';
 
 const Add_Users = () => {
   const { user } = useContext(UserContext);
@@ -22,7 +22,7 @@ const Add_Users = () => {
   const [address, setAddress] = useState('');
   const status = "1"; // Hardcoded status
   const role = "2"; // Assuming '2' is the role for the user being added
-  const [selectedFirmId, setSelectedFirmId] = useState('');
+  const [selectedFirmId, setSelectedFirmId] = useState([]);
   const [firms, setFirms] = useState([]);
 
   const [nameError, setNameError] = useState('');
@@ -102,19 +102,20 @@ const Add_Users = () => {
   };
 
   const validateFirmSelection = () => {
-    if (selectedFirmId === '') {
-      setErrorMessage('Please select a firm for the user.');
+    if (selectedFirmId.length === 0) {  // Check if no firm is selected
+      setErrorMessage('Please select at least one firm for the user.');
       return false;
     }
     setErrorMessage('');
     return true;
   };
+  
 
   // Fetch firms for the dropdown
   useEffect(() => {
     const fetchFirms = async () => {
       try {
-        const response = await fetch(`http://20.235.150.54:3007/api/users/get_all_firms_by_user/${userId}`);
+        const response = await fetch(`http://192.168.29.17:3007/api/users/get_all_firms_by_user/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -133,9 +134,8 @@ const Add_Users = () => {
     if (!validatePassword({ target: { value: password } })) return;
     if (!validateContact({ target: { value: contact } })) return;
     if (!validateAddress({ target: { value: address } })) return;
-    if (!validateFirmSelection()) return;
-
-
+    if (!validateFirmSelection()) return;  // Ensure firm selection is validated
+  
     try {
       const response = await fetch(ADD_USER_API_URL, {
         method: 'POST',
@@ -149,12 +149,11 @@ const Add_Users = () => {
           contact,
           address,
           status,
-          role
+          role,
         }),
       });
-
+  
       const responseData = await response.json();
-      console.log(responseData.data);
       if (responseData) {
         const newUser = responseData.data;
         if (await assignFirmToUser(newUser)) {
@@ -177,6 +176,7 @@ const Add_Users = () => {
       setSuccessMessage('');
     }
   };
+  
 
   const assignFirmToUser = async (added_user_id) => {
     try {
@@ -286,8 +286,16 @@ const Add_Users = () => {
                       <Form.Group as={Row} className="mb-3" controlId="formFirmName">
                         <Form.Label column sm={3}>Firm Name</Form.Label>
                         <Col sm={9}>
-                          <Form.Control as="select" value={selectedFirmId} className='form-select' onChange={(e) => setSelectedFirmId(e.target.value)}>
-                            <option value="">Select Firm</option>
+                          <Form.Control
+                            as="select"
+                            multiple
+                            value={selectedFirmId}
+                            className='form-select'
+                            onChange={(e) => {
+                              const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                              setSelectedFirmId(selectedOptions); validateFirmSelection();
+                            }}
+                          >
                             {firms.map((firm) => (
                               <option key={firm.firm_id} value={firm.firm_id}>
                                 {firm.firm_name}

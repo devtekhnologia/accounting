@@ -3,6 +3,7 @@ import { Button, Card, Col, Container, Form, Row, InputGroup } from 'react-boots
 import { APIRegister } from 'src/api/APIRegister';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+import { useToast, Wrap } from '@chakra-ui/react';
 
 const Signup = () => {
   const [nameReg, setNameReg] = useState('');
@@ -23,6 +24,10 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [showPassword, setShowPassword] = useState(false); // State for showing password
+
+  const toast = useToast();
+  const [toastStatus, setToastStatus] = useState('');
+  const [toastDescrip, setToastDescrip] = useState('');
 
   const navigate = useNavigate();
 
@@ -108,7 +113,7 @@ const Signup = () => {
     }
   };
 
-  const register = () => {
+  const register = async () => {
     if (!validateName({ target: { value: nameReg } })) {
       setNameError('Enter valid name.');
       return;
@@ -142,36 +147,75 @@ const Signup = () => {
     }).then((response) => {
       console.log(response);
       if (response.status && response.message === 'User registered successfully') {
-        setSuccessMessage('Registered successfully!');
+        setSuccessMessage('Account created successfully.');
         setErrorMessage('');
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        handleSuccess('Account created successfully.');
+
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       } else {
-        setErrorMessage('Unexpected response from server');
+        setErrorMessage('Something went wrong.');
         setSuccessMessage('');
+        handleError('Something went wrong.');
       }
     }).catch((error) => {
       console.error("Some error, solve it: ", error);
       if (error.response && error.response.data) {
         const errorMessage = error.response.data.message;
         if (errorMessage === 'All fields are required') {
-          setErrorMessage('Please fill out all fields');
+          setErrorMessage('Please fill out all fields.');
+          handleError('Please fill out all fields.');
         } else if (errorMessage === 'User already exists') {
-          setErrorMessage('Email or Contact No. is already used');
+          setErrorMessage('Email or Contact No. is already used.');
+          handleError('Email or Contact No. is already used.');
         } else if (errorMessage === 'Firm ID is required for firm_user role' || errorMessage === 'This firm is already assigned to another user') {
           setErrorMessage(errorMessage);
+          handleError(errorMessage);
         } else {
           setErrorMessage('Something went wrong !!');
+          handleError('Something went wrong !!');
         }
       } else {
         setErrorMessage('Something went wrong !!');
+        handleError('Something went wrong !!');
       }
+
       setSuccessMessage('');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
     });
+  };
+
+
+  const handleSuccess = (message) => {
+    
+    toast({
+      title: `${message}`,
+      description: 'We have created an account for you.',
+      status: 'success',
+      duration: 11000,
+      isClosable: true,
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
+
+  const handleError = (message) => {
+    setSuccessMessage('');
+    toast({
+      title: 'Issue',
+      description: `${message}`,
+      status: 'error',
+      duration: 11000,
+      isClosable: true,
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
 
   return (
@@ -232,11 +276,13 @@ const Signup = () => {
                 {addressError && <div className="text-danger mb-2">{addressError}</div>}
                 <Row className="login_log_bt_row justify-content-center align-content-center mt-3">
                   <Col className="login_log_bt_col text-center">
+
                     <Button onClick={register} className="login_log_bt" id='but_color'>
                       Register
                     </Button>
-                    {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
-                    {successMessage && <div className="text-success mt-2">{successMessage}</div>}
+
+                    {/* {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
+                    {successMessage && <div className="text-success mt-2">{successMessage}</div>} */}
                   </Col>
                 </Row>
                 <Row className="login_signup_bt_row justify-content-center align-content-center mt-3">

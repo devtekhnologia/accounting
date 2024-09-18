@@ -30,7 +30,7 @@ const Ledgers = () => {
   const [selectedFirmId, setSelectedFirmId] = useState('');
   const [firmsData, setFirmsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [editData, setEditData] = useState({ gl_id: '', gl_name: '', gl_status: '' });
+  const [editData, setEditData] = useState({ gl_id: '', gl_name: '', gl_status: '1' });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [firmToDelete, setFirmToDelete] = useState(null);
   const [totalBalance, setTotalBalance] = useState(null);
@@ -100,7 +100,7 @@ const Ledgers = () => {
       if (response.status !== 200) {
         throw new Error('Failed to update data');
       }
-      alert(response.data.message);
+      // alert(response.data.message);
       setShowModal(false);
       fetchData(firm_id);
     } catch (error) {
@@ -137,7 +137,7 @@ const Ledgers = () => {
   };
 
   const handleSave = () => {
-    updateLedgData(selectedFirmId, editData.gl_id, { gl_name: editData.gl_name, gl_status: editData.gl_status });
+    updateLedgData(selectedFirmId, editData.gl_id, { gl_name: editData.gl_name, gl_status: '1' });
   };
 
   return (
@@ -211,7 +211,7 @@ const Ledgers = () => {
                             <CTableRow>
                               <CTableHeaderCell>Sr. No.</CTableHeaderCell>
                               <CTableHeaderCell>Firm Account Name</CTableHeaderCell>
-                              <CTableHeaderCell>Status</CTableHeaderCell>
+                              <CTableHeaderCell>Account Type</CTableHeaderCell>
                               <CTableHeaderCell>Curr. Balance</CTableHeaderCell>
                               <CTableHeaderCell>Action</CTableHeaderCell>
                             </CTableRow>
@@ -221,7 +221,7 @@ const Ledgers = () => {
                               <CTableRow key={index}>
                                 <CTableDataCell>{index + 1}</CTableDataCell>
                                 <CTableDataCell>{firm.gl_name}</CTableDataCell>
-                                <CTableDataCell>{firm.gl_status}</CTableDataCell>
+                                <CTableDataCell>{firm.gl_type}</CTableDataCell>
                                 <CTableDataCell>{firm.balance}</CTableDataCell>
                                 <CTableDataCell>
                                   <CButton color="warning" size="sm" className="me-2" onClick={() => handleEdit(firm)}>Edit</CButton>
@@ -243,12 +243,12 @@ const Ledgers = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit General Ledger</Modal.Title>
+          <Modal.Title>Edit Firm Account</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group controlId="formGLName">
-              <Form.Label>Gen Ledger Name</Form.Label>
+              <Form.Label>Firm Account Name</Form.Label>
               <Form.Control
                 type="text"
                 value={editData.gl_name}
@@ -276,7 +276,7 @@ const Ledgers = () => {
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete this ledger?
+          Are you sure you want to delete this firm account?
         </Modal.Body>
         <Modal.Footer>
           <CButton color="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</CButton>

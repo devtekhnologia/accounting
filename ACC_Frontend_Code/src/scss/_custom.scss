@@ -6,7 +6,8 @@
 }
 
 .sidebar {
-  --cui-sidebar-bg: linear-gradient(270deg, #0A2E73, #16181C);
+  --cui-sidebar-bg: linear-gradient(270deg, #c6ffff, #2F4F4F);
+  // --cui-sidebar-bg: linear-gradient(270deg, #7a9c5a, #293f00);
 }
 
 
@@ -24,6 +25,8 @@
 // .sidebar_icon_color{
 //   color: #0A2E73;
 // }
+
+
 
 //--------------------------------Signup Screen----------------------------------------------//
 
@@ -67,14 +70,14 @@
 
 //--COMMON
 .but_color {
-  background-color: #0A2E73;
+  background-color: #293f00;
   border-color: #0A2E73;
 }
 
 //--COMMON
 #but_color {
-  background-color: #0A2E73;
-  border-color: #0A2E73;
+  background-color: #2F4F4F;
+  border-color: #2F4F4F;
 }
 
 //--COMMON
@@ -92,7 +95,7 @@
 
 //--COMMON
 #bg__color {
-  background-color: #0A2E73;
+  background-color: #2F4F4F;
   color: white;
   text-align: center;
 }
@@ -161,7 +164,7 @@
 // }
 
 .allfirms_title_row {
-  background: linear-gradient(270deg, #999999, #0A2E73);
+  background: linear-gradient(270deg, #7a9c5a, #293f00);
 
   // margin-left: 1000px;
 }
@@ -175,7 +178,7 @@
 
 
 .allfirms_icon_title_row {
-  background: linear-gradient(270deg, #999999, #0A2E73);
+  background: linear-gradient(270deg, #7cc7c7, #2F4F4F);
   padding-top: 5px;
   padding-bottom: 5px;
 }
@@ -185,7 +188,8 @@
 //-----------------------Payment CSS --------------------------//
 //------------Desktop and Laptop Responsive---------//
 .bg_color_blue_white {
-  background: linear-gradient(#0A2E73, #D9D9D9);
+  background: linear-gradient(#7cc7c7, #7cc7c7);
+  box-Shadow: 0px 4px 20px rgb(168, 168, 168);
 }
 
 
@@ -454,7 +458,7 @@
 }
 
 #but_color {
-  background-color: #0A2E73;
+  background-color: #2F4F4F;
   color: white;
 }
 
@@ -611,12 +615,12 @@
 
 //--COMMON
 #fil_but_color {
-  background-color: #0A2E73;
-  border-color: #0A2E73;
+  background-color: #2F4F4F;
+  border-color: #2F4F4F;
 }
 
 #fil_but_color {
-  background-color: #0A2E73;
+  background-color: #2F4F4F;
   color: white;
 }
 
@@ -652,7 +656,7 @@
 
   //----Login---///
 
-//--I have used these '.login_log_bt_col' and '.login_signup_bt_col' commonly for Login and Signup screens-------------------------------------------------------------//
+  //--I have used these '.login_log_bt_col' and '.login_signup_bt_col' commonly for Login and Signup screens-------------------------------------------------------------//
   .login_log_bt_col {
     // width: 30%;
     justify-content: center;

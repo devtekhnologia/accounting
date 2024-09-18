@@ -112,7 +112,7 @@ const Login = () => {
                   <Form.Control
                     className='input_fields'
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{ borderRadius: '8px' }}
+                    // style={{ borderRadius: '8px' }}
                     type={showPassword ? "text" : "password"} // Toggle type based on showPassword state
                     placeholder='Password'
                   />

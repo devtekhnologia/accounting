@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminHeader, AdminSidebar } from 'src/components';
 import AllFirms_logo from 'src/assets/images/admin_dashboard_icons/AllFirms.png';
-import { Form, FormControl, FormGroup, Row, Col, Button, Modal, FormLabel } from 'react-bootstrap';
+import { Form, FormControl, FormGroup, Row, Col, Button, Modal, FormLabel, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { UserContext } from 'src/context/UserContextProvider';
 import 'src/scss/_custom.scss';
 import { cilUser } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const SHOW_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/user_details/`;
-const UPDATE_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/update_user_details/`;
+const SHOW_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/user_details/`;
+const UPDATE_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/update_user_details/`;
 
 const Edit_Profile = () => {
   const { user } = useContext(UserContext);
@@ -25,6 +26,8 @@ const Edit_Profile = () => {
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false); // State for showing password
 
   // Fetch user details
   useEffect(() => {
@@ -103,7 +106,7 @@ const Edit_Profile = () => {
                     <Col style={{ marginLeft: "11px" }} className='col-10'>
                       <Row className='allfirms_icon_title_row align-items-center'>
                         <Col className='col-2 col-md-1'>
-                          <CIcon icon={cilUser} style={{ color: 'white', margin: "5px 0px 0px 0px" }} width={25} height={25} className=""/>
+                          <CIcon icon={cilUser} style={{ color: 'white', margin: "5px 0px 0px 0px" }} width={25} height={25} className="" />
                         </Col>
                         <Col className='col-7 col-md-7'>
                           <h5 className="title_font mb-0" style={{ color: 'white' }}>My Profile</h5>
@@ -144,13 +147,20 @@ const Edit_Profile = () => {
                         <FormGroup as={Row} className="mb-3" controlId="formPassword">
                           <FormLabel column md={4}>Password</FormLabel>
                           <Col md={8}>
-                            <FormControl
-                              type="password"
-                              placeholder="Password"
-                              value={password}
-                              readOnly
-                            />
+                            <InputGroup>
+                              <FormControl
+                                type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                                placeholder="Password"
+                                value={password}
+                                readOnly
+                              />
+
+                              <InputGroup.Text onClick={() => setShowPassword(!showPassword)} style={{ cursor: 'pointer' }}>
+                                {showPassword ? <FaEye /> : <FaEyeSlash />} {/* Toggle eye icon */}
+                              </InputGroup.Text>
+                            </InputGroup>
                           </Col>
+
                         </FormGroup>
 
                         <FormGroup as={Row} className="mb-3" controlId="formContact">
@@ -217,12 +227,17 @@ const Edit_Profile = () => {
             </FormGroup>
 
             <FormGroup className="mb-3" controlId="formPassword">
-              <FormControl
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <InputGroup>
+                <FormControl
+                  type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputGroup.Text onClick={() => setShowPassword(!showPassword)} style={{ cursor: 'pointer' }}>
+                  {showPassword ? <FaEye /> : <FaEyeSlash />} {/* Toggle eye icon */}
+                </InputGroup.Text>
+              </InputGroup>
             </FormGroup>
 
             <FormGroup className="mb-3" controlId="formContact">

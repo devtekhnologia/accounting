@@ -1,4 +1,4 @@
-const { createPayment, getAllTransactionsByFirmId, getPaymentById, getTotalBalanceByFirmId } = require('../models/paymentModel');
+const { createPayment, getAllTransactionsByFirmId, getPaymentById, getTotalBalanceByFirmId, getTotalBalanceByGlId } = require('../models/paymentModel');
 
 const createPaymentHandler = async (req, res) => {
   try {
@@ -95,4 +95,21 @@ const getTotalBalanceByFirmIdHandler = async (req, res) => {
   }
 };
 
-module.exports = { createPaymentHandler, getTransactionsByFirmIdHandler, getPaymentHandler, getTotalBalanceByFirmIdHandler };
+const getTotalBalanceByGlIdHandler = async (req, res) => {
+  try {
+    const { gl_id } = req.params;
+
+    if (!gl_id) {
+      return res.status(400).send({ status: false, message: "Please provide gl_id" });
+    }
+
+    const totalBalance = await getTotalBalanceByGlId(gl_id);
+
+    res.status(200).send({ status: true, data: { totalBalance }, message: "Total balance fetched successfully" });
+  } catch (error) {
+    console.error('Error fetching total balance:', error);
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { createPaymentHandler, getTransactionsByFirmIdHandler, getPaymentHandler, getTotalBalanceByFirmIdHandler, getTotalBalanceByGlIdHandler };

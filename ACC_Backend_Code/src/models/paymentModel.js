@@ -113,4 +113,10 @@ const getTotalBalanceByFirmId = async (firm_id) => {
   return result.total_balance || 0;
 };
 
-module.exports = { createPayment, getAllTransactionsByFirmId, getPaymentById, userHasGeneralLedger, getTotalBalanceByFirmId };
+const getTotalBalanceByGlId = async (gl_id) => {
+  const sql = 'SELECT SUM(gl.balance) AS total_balance FROM tbl_general_ledgers gl WHERE gl.gl_id = ?';
+  const [result] = await query(sql, [gl_id]);
+  return result.total_balance || 0;
+};
+
+module.exports = { createPayment, getAllTransactionsByFirmId, getPaymentById, userHasGeneralLedger, getTotalBalanceByFirmId, getTotalBalanceByGlId };

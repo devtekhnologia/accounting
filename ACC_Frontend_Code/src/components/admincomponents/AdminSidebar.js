@@ -15,7 +15,7 @@ import 'simplebar/dist/simplebar.min.css'
 // sidebar nav config
 import navigation from '../../views/nav/_adminnav'
 import { cibChef } from '@coreui/icons'
-import qpelogo from 'src/assets/brand/accounts_brand_logo.png'
+import fin_acc_logo from 'src/assets/brand/accounts_brand_logo.png'
 
 
 const AdminSidebar = () => {
@@ -31,15 +31,15 @@ const AdminSidebar = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
-      style={{borderRadius:'0px 0px 50px 0px'}}
+      style={{borderRadius:'0px 0px 50px 0px', boxShadow: '0px 7px 15px rgb(71, 71, 71)' }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/admin">
-        <CImage src={qpelogo} height={45} />
+        <CImage src={fin_acc_logo} style={{height:"60px"}} />
         {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
           <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} /> 
         <CIcon className="sidebar-brand-full" icon={cibChef} height={35} /> */}
-        {/* <span></span>
-        <strong>Ques.Digi</strong> */}
+        {/* <span></span>*/}
+        <div style={{color:'black', fontWeight:'500'}}>TEKHNO FINTEK ACC</div>
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>

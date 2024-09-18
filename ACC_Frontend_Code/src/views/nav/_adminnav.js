@@ -64,11 +64,28 @@ const _adminnav = [
     ],
   },
   {
-    component: CNavItem,
-    name: 'Firm Accounts',
-    to: '/ledgers',
+    component: CNavGroup,
+    name: 'Firm Account',
     icon: <img src={Firm_acc_icon} width={23} height={23} className='mx-3' />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'All Firms Accounts',
+        to: '/ledgers',
+      },
+      {
+        component: CNavItem,
+        name: 'Create Firm Account',
+        to: '/create_ledger',
+      },
+    ],
   },
+  // {
+  //   component: CNavItem,
+  //   name: 'Firm Accounts',
+  //   to: '/ledgers',
+  //   icon: <img src={Firm_acc_icon} width={23} height={23} className='mx-3' />,
+  // },
   {
     component: CNavGroup,
     name: 'Users',
@@ -86,18 +103,56 @@ const _adminnav = [
       },
     ],
   },
+
   {
-    component: CNavItem,
-    name: 'Payments',
-    to: '/make_payment',
+    component: CNavGroup,
+    name: 'Payment',
     icon: <img src={payments_icon} width={23} height={23} className='mx-3' />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Make Payment',
+        to: '/make_payment',
+      },
+      {
+        component: CNavItem,
+        name: 'All Payments',
+        to: '/all_payments',
+      },
+      
+    ],
   },
+  // {
+  //   component: CNavItem,
+  //   name: 'Payments',
+  //   to: '/make_payment',
+  //   icon: <img src={payments_icon} width={23} height={23} className='mx-3' />,
+  // },
+
   {
-    component: CNavItem,
-    name: 'Receipts',
-    to: '/create_receipt',
+    component: CNavGroup,
+    name: 'Receipt',
     icon: <img src={receipts_icon} width={23} height={23} className='mx-3' />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Create Receipt',
+        to: '/create_receipt',
+      },
+      {
+        component: CNavItem,
+        name: 'All Receipts',
+        to: '/all_receipts',
+      },
+      
+    ],
   },
+  // {
+  //   component: CNavItem,
+  //   name: 'Receipts',
+  //   to: '/create_receipt',
+  //   icon: <img src={receipts_icon} width={23} height={23} className='mx-3' />,
+  // },
   // {
   //   component: CNavItem,
   //   name: 'Make Transaction',
@@ -111,9 +166,35 @@ const _adminnav = [
     items: [
       {
         component: CNavItem,
-        name: 'Firms Transactions',
+        name: 'Firms Report',
         to: '/firm_transactions',
       },
+
+      {
+        component: CNavItem,
+        name: 'Ledger Report',
+        to: '/ledger_report',
+      },
+
+      {
+        component: CNavItem,
+        name: 'Cash Report',
+        to: '/cash_report',
+      },
+      {
+        component: CNavItem,
+        name: 'Day Book',
+        to: '/day_book',
+      },
+
+      {
+        component: CNavItem,
+        name: 'Complete Report',
+        to: '/complete_report',
+      },
+
+      
+      
       // {
       //   component: CNavItem,
       //   name: 'User Transactions',
@@ -122,12 +203,12 @@ const _adminnav = [
     ],
   },
 
-  {
-    component: CNavItem,
-    name: 'Day Book',
-    to: '/day_book',
-    icon: <img src={DayBook_icon} width={23} height={23} className='mx-3' />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Day Book',
+  //   to: '/day_book',
+  //   icon: <img src={DayBook_icon} width={23} height={23} className='mx-3' />,
+  // },
   // {
   //   component: CNavItem,
   //   name: 'Setting',

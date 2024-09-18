@@ -7,6 +7,7 @@ const {
   updateUserDetails,
   deleteUser,
   assignFirmToUser,
+  getUserFirms,
   firmUser,
   updateFirmUser,
   deleteFirmUser,
@@ -82,13 +83,24 @@ const addUserHandler = async (req, res) => {
 const userDetailsHandler = async (req, res) => {
   try {
     const { user_id } = req.params;
-    const user = await userDetails(user_id);
 
-    if (!user) {
+    // Fetch user details
+    const userData = await userDetails(user_id);
+    if (!userData) {
       return res.status(404).send({ status: false, message: 'User not found' });
     }
 
-    res.status(200).send({ status: true, data: user });
+    // Fetch user firms
+    const userFirms = await getUserFirms(user_id);
+
+    // Prepare response data
+    const responseData = {
+      ...userData,
+      firms: userFirms // Add list of firm IDs to the user object
+    };
+
+    // Send response
+    res.status(200).send({ status: true, data: responseData });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
@@ -126,15 +138,23 @@ const deleteUserHandler = async (req, res) => {
 const assignFirmToUserHandler = async (req, res) => {
   try {
     const { user_id, firm_id, added_by_user_id } = req.body;
+
     if (!user_id || !firm_id || !added_by_user_id) {
       return res.status(400).send({ status: false, message: 'user_id, firm_id, and added_by_user_id are required' });
     }
+
+    if (!Array.isArray(firm_id)) {
+      return res.status(400).send({ status: false, message: 'firm_id must be an array' });
+    }
+
     await assignFirmToUser(user_id, firm_id, added_by_user_id);
-    res.status(200).send({ status: true, message: 'Firm assigned to user successfully' });
+
+    res.status(200).send({ status: true, message: 'Firms assigned to user successfully' });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
 
 // // Update firm user
 // const updateFirmUserHandler = async (req, res) => {
@@ -156,19 +176,20 @@ const assignFirmToUserHandler = async (req, res) => {
 // Update firm user
 const updateFirmUserHandler = async (req, res) => {
   try {
-    const { uf_id } = req.params;
-    const { user_id, firm_id } = req.body;
+    const { user_id } = req.params;
+    const { selectedFirmIds, deselectedFirmIds, added_by_user_id } = req.body;
 
-    if (!user_id || !firm_id) {
-      return res.status(400).send({ status: false, message: 'All fields are required' });
+    if (!user_id || (!selectedFirmIds && !deselectedFirmIds) || !added_by_user_id) {
+      return res.status(400).send({ status: false, message: 'User ID and firm selections are required' });
     }
 
-    await updateFirmUser(uf_id, user_id, firm_id);
+    await updateFirmUser(user_id, selectedFirmIds, deselectedFirmIds, added_by_user_id);
     res.status(200).send({ status: true, message: 'Firm user updated successfully' });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
 
 // Get firm user
 const firmUserHandler = async (req, res) => {
@@ -209,11 +230,38 @@ const usersAddedByUserHandler = async (req, res) => {
       return res.status(404).send({ status: false, message: 'No users found for the given user_id' });
     }
 
-    res.status(200).send({ status: true, data: users });
+    // Group users by user_id and merge associated data
+    const groupedUsers = users.reduce((acc, user) => {
+      const existingUser = acc.find(u => u.user_id === user.user_id);
+
+      if (existingUser) {
+        // If user_id already exists, push the firm details into the existing arrays
+        existingUser.uf_id.push(user.uf_id);
+        existingUser.firm_id.push(user.firm_id);
+        existingUser.firm_name.push(user.firm_name);
+      } else {
+        // If user_id does not exist, create a new user object
+        acc.push({
+          user_id: user.user_id,
+          usr_name: user.usr_name,
+          usr_email: user.usr_email,
+          usr_address: user.usr_address,
+          usr_status: user.usr_status,
+          uf_id: [user.uf_id],
+          firm_id: [user.firm_id],
+          firm_name: [user.firm_name],
+        });
+      }
+
+      return acc;
+    }, []);
+
+    res.status(200).send({ status: true, data: groupedUsers });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
 
 module.exports = {
   registerYourself,

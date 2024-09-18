@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { CButton, CCard, CCol, CImage, CRow } from '@coreui/react';
+import { CButton, CCard, CCol, CModal, CModalBody, CModalFooter, CModalHeader, CRow } from '@coreui/react';
 import { AdminHeader, AdminSidebar, FirmusrHeader, FirmusrSidebar } from 'src/components';
-import AllFirms_logo from 'src/assets/images/admin_dashboard_icons/AllFirms.png';
 import { Form, Button, Row, Col, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { UserContext } from 'src/context/UserContextProvider';
@@ -14,21 +13,21 @@ const User_Create_Ledger = () => {
     const [firms, setFirms] = useState([]);
     const [selectedFirmId, setSelectedFirmId] = useState('');
     const [generalLedgerName, setGeneralLedgerName] = useState('');
-
+    const [gl_Type, setGl_Type] = useState(false); // Changed to boolean
+    const [opening_Balance, setOpening_Balance] = useState('');
     const [selectFirmError, setSelectFirmError] = useState('');
     const [glNameError, setGLNameError] = useState('');
-
-    // Modal state
-    const [showModal, setShowModal] = useState(false);
+    const [openBalError, setOpenBalError] = useState(''); // Added state for balance validation
+    const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalTitle, setModalTitle] = useState('');
 
-    // Validation functions
     const validateGLName = (e) => {
-        setGeneralLedgerName(e.target.value);
+        const value = e.target.value;
+        setGeneralLedgerName(value);
         setSelectFirmError('');
 
-        if (generalLedgerName.length === 0) {
+        if (value.length === 0) {
             setGLNameError('Name must be at least 2 characters long.');
             return false;
         }
@@ -36,15 +35,27 @@ const User_Create_Ledger = () => {
         setGLNameError('');
 
         const regex = /^[a-zA-Z\s]+$/;
-        if (generalLedgerName.length < 2) {
+        if (value.length < 1) {
             setGLNameError('Name must be at least 2 characters long.');
             return false;
-        } else if (regex.test(generalLedgerName)) {
+        } else if (regex.test(value)) {
             setGLNameError('');
             return true;
         } else {
             setGLNameError('Only letters and spaces are allowed.');
             return false;
+        }
+    };
+
+    const validateOpeningBalance = (e) => {
+        const value = e.target.value;
+        setOpening_Balance(value);
+        const decimalRegex = /^[0-9]*\.?[0-9]+$/; // Regex for decimal numbers
+
+        if (!decimalRegex.test(value) || value < 0) {
+            setOpenBalError('Enter a valid positive decimal number.');
+        } else {
+            setOpenBalError('');
         }
     };
 
@@ -70,39 +81,45 @@ const User_Create_Ledger = () => {
             if (selectedFirmId) {
                 setSelectFirmError('');
             }
-
+    
             if (!selectedFirmId || !generalLedgerName) {
-                setSelectFirmError('Please select a firm and enter a firm account name');
+                setSelectFirmError('Please select a firm and enter a firm account name.');
                 return;
             }
-
+    
             if (!validateGLName({ target: { value: generalLedgerName } })) {
                 setSelectFirmError('');
-                setGLNameError('Enter valid firm account name.');
+                setGLNameError('Enter a valid firm account name.');
                 return;
             }
-
+    
+            if (openBalError) {
+                setSelectFirmError('');
+                return;
+            }
+    
             const firm_id = selectedFirmId;
             const response = await axios.post(`${api_url}/api/users/create_general_ledgers/${firm_id}`, {
-                gl_name: generalLedgerName
+                gl_name: generalLedgerName,
+                gl_type: gl_Type ? '1' : '2', // Map boolean to enum type
+                open_balance: opening_Balance.trim() === '' ? '' : opening_Balance // Set to blank if empty
             });
-
+    
             if (response.status === 201) {
                 setModalTitle('Firm Account Status');
                 setModalMessage('Firm account created successfully !!');
+                setModalVisible(true);
                 setGeneralLedgerName(''); // Reset the input after successful creation
-            } else {
-                setModalTitle('Firm Account Status');
-                setModalMessage('Please try again !!');
+                setOpening_Balance('');
             }
         } catch (error) {
             console.error('Error creating general ledger:', error);
             setModalTitle('Firm Account Status');
-            setModalMessage('Something went wrong !!');
-        } finally {
-            setShowModal(true);
+            setModalMessage('Please try again !!');
+            setModalVisible(true);
         }
     };
+    
 
     return (
         <div>
@@ -149,8 +166,24 @@ const User_Create_Ledger = () => {
                                                     {glNameError && <div className="text-danger mb-2">{glNameError}</div>}
                                                 </Col>
                                             </Form.Group>
+                                            <Form.Group as={Row} className="mb-3" controlId="formOpeningBalance">
+                                                <Form.Label column sm={3}>Opening Balance</Form.Label>
+                                                <Col sm={6}>
+                                                    <Form.Control type="text" value={opening_Balance} onChange={validateOpeningBalance} />
+                                                    {openBalError && <div className="text-danger mb-2">{openBalError}</div>}
+                                                </Col>
+                                            </Form.Group>
+                                            <Form.Group as={Row} className="mb-3" controlId="formGLType">
+                                                <Col sm={6}>
+                                                    <Form.Check
+                                                        type="checkbox"
+                                                        label="Is it Cash"
+                                                        checked={gl_Type}
+                                                        onChange={(e) => setGl_Type(e.target.checked)}
+                                                    />
+                                                </Col>
+                                            </Form.Group>
                                             {selectFirmError && <div className="text-danger mb-2">{selectFirmError}</div>}
-
                                             <Row className='cf_acc_bt_row justify-content-center align-content-center'>
                                                 <Button variant="primary" id="but_color" onClick={handleCreateLedger}>Create</Button>
                                             </Row>
@@ -163,14 +196,15 @@ const User_Create_Ledger = () => {
                 </div>
             </div>
 
-            {/* Modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+            <Modal show={modalVisible} onHide={() => setModalVisible(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>{modalTitle}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{modalMessage}</Modal.Body>
+                <Modal.Body>
+                    {modalMessage}
+                </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <Button variant="primary" onClick={() => setModalVisible(false)}>
                         Close
                     </Button>
                 </Modal.Footer>

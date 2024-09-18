@@ -7,6 +7,9 @@ import { AdminSidebar, AdminHeader } from 'src/components';
 import { UserContext } from 'src/context/UserContextProvider';
 import { api_url } from 'src/api/APIURL';
 import payments from 'src/assets/icons/sidebar_icons/payments.png';
+import { CSpinner } from '@coreui/react';
+import { Alert } from '@chakra-ui/react';
+import { AlertIcon, AlertTitle } from '@chakra-ui/react';
 
 const MakePayment = () => {
   const { user } = useContext(UserContext);
@@ -25,6 +28,9 @@ const MakePayment = () => {
   const [showModalFooter, setShowModalFooter] = useState(false);
   const [modalButtonText, setModalButtonText] = useState('');
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [isTransSuccessful, setIsTransSuccessful] = useState(true);
 
   useEffect(() => {
     const fetchFirmGlPairs = async () => {
@@ -60,6 +66,7 @@ const MakePayment = () => {
     if (modalButtonText === 'Close') {
       setShowModal(false);
     } else {
+      setLoading(true);
       try {
         const [selectedFromFirmId, selectedFromGLId] = selectedFromFirmGl.split('-');
         const [selectedToFirmId, selectedToGLId] = selectedToFirmGl.split('-');
@@ -92,7 +99,7 @@ const MakePayment = () => {
         });
 
         if (!response.ok) {
-          
+          setIsTransSuccessful(false);
           throw new Error('Failed to process payment');
         }
 
@@ -105,11 +112,15 @@ const MakePayment = () => {
         setModalButtonText('Close');
         refresh();
       } catch (error) {
+        setIsTransSuccessful(false);
         console.error('Error processing payment:', error);
         setModalTitle('Payment Status');
         setModalMessage('Payment Failed !!');
         setShowModalFooter(false);
         setModalButtonText('Close');
+        refresh();
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -151,11 +162,11 @@ const MakePayment = () => {
                   <Col className="make_pay_block_col mb-3 mb-md-0">
                     <Row className='justify-content-center'>
                       <Col md={12}>
-                        <Card className='bg_color_blue_white'>
+                        <Card className='bg_color_blue_white' id='bg_color_blue_white'>
                           <Card.Body>
                             <Form>
                               <FormGroup className="mb-3" controlId="formTransactionID">
-                                <FormLabel>Transaction :</FormLabel>
+                                <FormLabel style={{ fontWeight: 'bold' }}>Transaction :</FormLabel>
                               </FormGroup>
                               <FormGroup as={Row} className="mb-3" controlId="formFrom">
                                 <FormLabel column className='make_pay_lable' md={3}>From:</FormLabel>
@@ -227,17 +238,16 @@ const MakePayment = () => {
                                   />
                                 </Col>
                               </FormGroup>
-                              <Row className='justify-content-center'>
-                                <Col sm={5}>
-                                  <Button id="but_color" type="button" onClick={handleSavePayment} className="w-100">
-                                    Make Payment
-                                  </Button>
-                                </Col>
-                              </Row>
+
                             </Form>
                             {validationMessage && <p className="text-danger mt-3">{validationMessage}</p>}
                           </Card.Body>
                         </Card>
+                        <Row className='justify-content-center align-content-center mt-3 cf_acc_bt_row'>
+                          <Button id="but_color" type="button" onClick={handleSavePayment} className="w-100">
+                            Make Payment
+                          </Button>
+                        </Row>
                       </Col>
                     </Row>
                   </Col>
@@ -247,21 +257,79 @@ const MakePayment = () => {
           </Row>
         </Container>
       </div>
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header>
-          <Modal.Title>{modalTitle}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{modalMessage}</p>
-        </Modal.Body>
-        {showModalFooter && (
-          <Modal.Footer>
-            <Button id="but_color" onClick={confirmPayment}>
-              {modalButtonText}
-            </Button>
-          </Modal.Footer>
+        {loading ? (
+          <div className="d-flex justify-content-center">
+            <CSpinner color="success" />
+          </div>
+        ) : !isTransSuccessful ? (
+          <>
+            <Modal.Header>
+              <Modal.Title>{modalTitle}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Alert
+                status='error'
+                variant='subtle'
+                flexDirection='column'
+                alignItems='center'
+                justifyContent='center'
+                textAlign='center'
+                height='200px'
+              >
+                <AlertIcon boxSize='40px' mr={0} />
+                <AlertTitle mt={4} mb={1} fontSize='lg'>
+                  {modalMessage}
+                </AlertTitle>
+              </Alert>
+              {/* <p>{modalMessage}</p> */}
+            </Modal.Body>
+            {showModalFooter && (
+              <Modal.Footer>
+                <Button id="but_color" onClick={confirmPayment}>
+                  {modalButtonText}
+                </Button>
+              </Modal.Footer>
+            )}
+          </>
+        ) : (
+          <>
+            <Modal.Header>
+              <Modal.Title>{modalTitle}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Alert
+                status='success'
+                variant='subtle'
+                flexDirection='column'
+                alignItems='center'
+                justifyContent='center'
+                textAlign='center'
+                height='200px'
+              >
+                {modalTitle === 'Confirm Payment' ? (<></>
+                ) : (
+                  <AlertIcon boxSize='40px' mr={0} />
+                )}
+
+                <AlertTitle mt={4} mb={1} fontSize='lg'>
+                  {modalMessage}
+                </AlertTitle>
+              </Alert>
+              {/* <p>{modalMessage}</p> */}
+            </Modal.Body>
+            {showModalFooter && (
+              <Modal.Footer>
+                <Button id="but_color" onClick={confirmPayment}>
+                  {modalButtonText}
+                </Button>
+              </Modal.Footer>
+            )}
+          </>
         )}
       </Modal>
+
     </div>
   );
 };

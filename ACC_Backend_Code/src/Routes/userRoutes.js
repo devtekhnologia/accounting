@@ -10,6 +10,9 @@ const paymentController = require('../controllers/paymentController');
 const receiptController = require('../controllers/receiptController');
 const firmAllTransactionsController = require('../controllers/firmAllTransactionsController');
 const dayBookController = require('../controllers/dayBookController');
+const ledgerReportController = require('../controllers/ledgerReportController');
+const cashReportController = require('../controllers/cashReportController');
+
 
 const publicRoutes = express.Router();
 
@@ -26,8 +29,8 @@ publicRoutes.get('/user_details/:user_id', userController.userDetailsHandler);
 publicRoutes.put('/update_user_details/:user_id', userController.updateUserDetailsHandler);
 publicRoutes.delete('/delete_user/:user_id', userController.deleteUserHandler);
 publicRoutes.post('/assign_firm_to_user', userController.assignFirmToUserHandler);
-publicRoutes.get('/show_firm_user/:uf_id', userController.firmUserHandler);
-publicRoutes.put('/update_firm_user/:uf_id', userController.updateFirmUserHandler);
+publicRoutes.get('/show_firm_user/:uf_id', userController.firmUserHandler); //This is unnecessary API
+publicRoutes.put('/update_firm_user/:user_id', userController.updateFirmUserHandler);
 publicRoutes.delete('/delete_firm_user/:uf_id', userController.deleteFirmUserHandler);
 publicRoutes.get('/users_added_by_user/:user_id', userController.usersAddedByUserHandler);
 
@@ -36,7 +39,7 @@ publicRoutes.get('/users_added_by_user/:user_id', userController.usersAddedByUse
 // APIs for firms
 publicRoutes.post('/create_firm/:user_id', firmController.createFirmHandler);
 publicRoutes.get('/get_firm_details/:firm_id', firmController.getFirmHandler);
-publicRoutes.get('/get_all_firms', firmController.getAllFirmsHandler);
+publicRoutes.get('/get_all_firms', firmController.getAllFirmsHandler); // Useless
 publicRoutes.get('/get_all_firms_by_user/:user_id', firmController.getFirmsByUserHandler);
 publicRoutes.get('/get_all_firms_by_adding_user/:user_id', firmController.getFirmsByAddingUserHandler);
 publicRoutes.put('/update_firm_details/:firm_id', firmController.updateFirmHandler);
@@ -53,7 +56,7 @@ publicRoutes.get('/total_bal_of_all_firms/:user_id', firmController.getTotalBala
 
 
 // // APIs for General_Ledgers
-publicRoutes.post('/create_general_ledgers/:firm_id', geneLedgerController.createGeneralLedgerHandler);
+publicRoutes.post('/create_general_ledgers/:firm_id', geneLedgerController.createGeneralLedgerHandler); 
 publicRoutes.get('/get_general_ledgers/:firm_id', geneLedgerController.getGeneralLedgersHandler);
 publicRoutes.put('/update_general_ledgers/:firm_id/:gl_id', geneLedgerController.updateGeneralLedgerHandler);
 publicRoutes.delete('/delete_general_ledgers/:firm_id/:gl_id', geneLedgerController.deleteGeneralLedgerHandler);
@@ -61,13 +64,16 @@ publicRoutes.delete('/delete_general_ledgers/:firm_id/:gl_id', geneLedgerControl
 
 publicRoutes.get('/firm_ledger_pairs/:user_id', firmGenLedPairController.getFirmAndGeneralLedgerPairsHandler);
 publicRoutes.get('/firm_ledger_pairs_by_adding_user/:user_id', firmGenLedPairController.getFirmAndGeneralLedgerPairsByAddingUserHandler);
+publicRoutes.get('/cash_firm_ledger_pairs/:user_id', firmGenLedPairController.getFirmAndCash_GeneralLedgerPairsHandler);
 
 
 // // APIs for Payment
 publicRoutes.post('/payment/:user_id', paymentController.createPaymentHandler );
 publicRoutes.get('/show_payment_transac/:from_firm_id', paymentController.getTransactionsByFirmIdHandler );
-publicRoutes.get('/show_payment_details/:transaction_id', paymentController.getPaymentHandler);
+publicRoutes.get('/show_payment_details/:transaction_id', paymentController.getPaymentHandler); //Useless
 publicRoutes.get('/firm_total_bal/:firm_id', paymentController.getTotalBalanceByFirmIdHandler);
+publicRoutes.get('/ledger_total_bal/:gl_id', paymentController.getTotalBalanceByGlIdHandler);
+
 
 
 // // APIs for Receipt
@@ -79,6 +85,11 @@ publicRoutes.get('/show_receipt_transactions/:to_firm_id', receiptController.get
 publicRoutes.get('/show_firm_all_transactions/:firm_id/transactions', firmAllTransactionsController.getAllFirmTransactionsHandler);
 // publicRoutes.get('/show_day_book_transactions/:firm_id', dayBookController.dayBookHandler);
 publicRoutes.get('/show_day_book_transactions/:user_id', dayBookController.dayBookHandler);
+
+publicRoutes.get('/ledger_report/:firm_id/:gl_id', ledgerReportController.getLedgerReportHandler);
+
+// publicRoutes.get('/cash_report/:firm_id/:gl_id', cashReportController.getCashReportHandler);
+publicRoutes.get('/cash_report_by_user/:user_id', cashReportController.getCashReportHandler);
 
 
 // publicRoutes.post('/create_transactions', createTransaction);

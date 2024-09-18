@@ -62,6 +62,15 @@ const Routess = () => {
   //-------------Day Book--------------//
   const Day_Book = React.lazy(() => import('../views/admin/Reports/Day_Book/Day_Book'))
 
+  //-------------Ledger Report--------------//
+  const Ledger_Report = React.lazy(() => import('../views/admin/Reports/Ledger_Report/Ledger_Report'))
+
+  //-------------Cash Report--------------//
+  const Cash_Report = React.lazy(() => import('../views/admin/Reports/Cash_Report/Cash_Report'))
+
+  //-------------Complete Report--------------//
+  const Complete_Report = React.lazy(() => import('../views/admin/Reports/Complete_Report/Complete_Report'))
+
   //-----Other Pages-----//
   const AdminSetting = React.lazy(() => import('../views/admin/AdminSetting'))
   const AdminHelp = React.lazy(() => import('../views/admin/AdminHelp'))
@@ -128,6 +137,15 @@ const Routess = () => {
 
   //-------------Day Book--------------//
   const User_Day_Book = React.lazy(() => import('../views/firm_user/Reports/Day_Book/User_Day_Book'))
+
+  //-------------Ledger Report--------------//
+  const User_Ledger_Report = React.lazy(() => import('../views/firm_user/Reports/Ledger_Report/User_Ledger_Report'))
+
+  //-------------Cash Report--------------//
+  const User_Cash_Report = React.lazy(() => import('../views/firm_user/Reports/Cash_Report/User_Cash_Report'))
+
+  //-------------Complete Report--------------//
+  const User_Complete_Report = React.lazy(() => import('../views/firm_user/Reports/Complete_Report/User_Complete_Report'))
 
   //--------------------------Login and Register Pages----------------------------------------------//
   const Login = React.lazy(() => import('../views/pages/login/Login'))
@@ -207,6 +225,15 @@ const Routess = () => {
           {/* -------------Day Book------------- */}
           <Route path="/day_book" name="Day_Book" element={<Day_Book />} />
 
+          {/* -------------Ledger_Report------------- */}
+          <Route path="/ledger_report" name="Ledger_Report" element={<Ledger_Report />} />
+
+          {/* -------------Cash_Report------------- */}
+          <Route path="/cash_report" name="Cash_Report" element={<Cash_Report />} />
+
+          {/* -------------Complete_Report------------- */}
+          <Route path="/complete_report" name="Complete_Report" element={<Complete_Report />} />
+
           {/* -------------Other Pages------------- */}
           <Route path="/adminsetting" name="AdminSetting" element={< AdminSetting />} />
           <Route path="/adminhelp" name="AdminHelp" element={< AdminHelp />} />
@@ -248,6 +275,15 @@ const Routess = () => {
           <Route path="/user_transactions" name="User_Transactions" element={<User_Transactions />} /> */}
           {/* -------------Day Book------------- */}
           <Route path="/user_day_book" name="User_Day_Book" element={<User_Day_Book />} />
+
+          {/* -------------User_Ledger_Report------------- */}
+          <Route path="/user_ledger_report" name="User_Ledger_Report" element={<User_Ledger_Report />} />
+
+          {/* -------------User_Cash_Report------------- */}
+          <Route path="/user_cash_report" name="User_Cash_Report" element={<User_Cash_Report />} />
+
+          {/* -------------User_Complete_Report------------- */}
+          <Route path="/user_complete_report" name="User_Complete_Report" element={<User_Complete_Report />} />
 
 
           {/* -------------Other Pages------------- */}

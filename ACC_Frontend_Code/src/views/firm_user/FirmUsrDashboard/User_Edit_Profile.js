@@ -8,8 +8,8 @@ import 'src/scss/_custom.scss';
 import CIcon from '@coreui/icons-react';
 import { cilUser } from '@coreui/icons';
 
-const SHOW_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/user_details/`;
-const UPDATE_USER_DETAILS_API_URL = `http://20.235.150.54:3007/api/users/update_user_details/`;
+const SHOW_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/user_details/`;
+const UPDATE_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/update_user_details/`;
 
 const User_Edit_Profile = () => {
   const { user } = useContext(UserContext);
@@ -21,7 +21,7 @@ const User_Edit_Profile = () => {
   const [contact, setContact] = useState('');
   const [address, setAddress] = useState('');
   const status = "1"; // Hardcoded status
-  const role = "1"; // Assuming '2' is the role for the user being added
+  const role = "2"; // Assuming '2' is the role for the user being added
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

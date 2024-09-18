@@ -16,7 +16,7 @@ import CIcon from '@coreui/icons-react'
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 
 import { FirmusrHeaderDropdown } from './header/index'
-import qpelogo from 'src/assets/brand/accounts_brand_logo.png'
+import fin_acc_logo from 'src/assets/brand/accounts_brand_logo.png'
 
 
 const FirmusrHeader = () => {
@@ -34,7 +34,7 @@ const FirmusrHeader = () => {
         </CHeaderToggler>
 
         <CHeaderBrand className="header_brand_logo d-md-none" to="/">
-          <CImage src={qpelogo} height={45} />
+          <CImage src={fin_acc_logo} style={{height:"60px"}} />
         </CHeaderBrand>
 
         <CHeaderNav className="d-none d-md-flex me-auto">
