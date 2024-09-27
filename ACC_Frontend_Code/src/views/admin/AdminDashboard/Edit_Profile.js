@@ -9,8 +9,8 @@ import { cilUser } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const SHOW_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/user_details/`;
-const UPDATE_USER_DETAILS_API_URL = `http://192.168.29.17:3007/api/users/update_user_details/`;
+const SHOW_USER_DETAILS_API_URL = `http://192.168.29.17:3008/api/users/user_details/`;
+const UPDATE_USER_DETAILS_API_URL = `http://192.168.29.17:3008/api/users/update_user_details/`;
 
 const Edit_Profile = () => {
   const { user } = useContext(UserContext);

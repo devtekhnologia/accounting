@@ -59,7 +59,7 @@ const createPayment = async (from_gl_id, to_gl_id, from_firm_id, to_firm_id, use
 const getAllTransactionsByFirmId = async (from_firm_id, startDate, endDate) => {
   let sql = `
     SELECT 
-      t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark, t.trans_type,
+      t.transaction_id, t.amount, t.transaction_date, t.from_firm_id, t.from_gl_id, t.to_gl_id, t.remark, t.trans_type,
       from_gl.gl_name AS from_gl_name, 
       to_gl.gl_name AS to_gl_name,
       to_firm.firm_name AS to_firm_name,

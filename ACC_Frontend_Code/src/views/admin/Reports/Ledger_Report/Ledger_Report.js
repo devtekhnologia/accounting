@@ -261,6 +261,7 @@ const Ledger_Report = () => {
                                     setSelectedFirmGl(gl_id);
                                     setSelectedFirmId(firm_id);
                                     // You can also use the gl_id if needed
+                            
                                     console.log('Selected firm_id:', firm_id);
                                     console.log('Selected gl_id:', gl_id);
                                   }}

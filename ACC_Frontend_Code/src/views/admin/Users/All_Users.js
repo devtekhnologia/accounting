@@ -15,12 +15,12 @@ import { api_url } from 'src/api/APIURL';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
-const USERS_ADDED_BY_USER_API_URL = userId => `http://192.168.29.17:3007/api/users/users_added_by_user/${userId}`;
-const TOTAL_BALANCE_OF_USER_API_URL = userId => `http://192.168.29.17:3007/api/users/total_bal_of_all_firms/${userId}`;
-const USER_DETAILS_API_URL = user_id => `http://192.168.29.17:3007/api/users/user_details/${user_id}`;
-const UPDATE_USER_DETAILS_API_URL = user_id => `http://192.168.29.17:3007/api/users/update_user_details/${user_id}`;
-const UPDATE_FIRM_USER_API_URL = user_id => `http://192.168.29.17:3007/api/users/update_firm_user/${user_id}`;
-const DELETE_FIRM_USER_API_URL = uf_id => `http://192.168.29.17:3007/api/users/delete_firm_user/${uf_id}`;
+const USERS_ADDED_BY_USER_API_URL = userId => `http://192.168.29.17:3008/api/users/users_added_by_user/${userId}`;
+const TOTAL_BALANCE_OF_USER_API_URL = userId => `http://192.168.29.17:3008/api/users/total_bal_of_all_firms/${userId}`;
+const USER_DETAILS_API_URL = user_id => `http://192.168.29.17:3008/api/users/user_details/${user_id}`;
+const UPDATE_USER_DETAILS_API_URL = user_id => `http://192.168.29.17:3008/api/users/update_user_details/${user_id}`;
+const UPDATE_FIRM_USER_API_URL = user_id => `http://192.168.29.17:3008/api/users/update_firm_user/${user_id}`;
+const DELETE_FIRM_USER_API_URL = uf_id => `http://192.168.29.17:3008/api/users/delete_firm_user/${uf_id}`;
 
 const All_Users = () => {
   const { user } = useContext(UserContext);

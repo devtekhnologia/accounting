@@ -109,18 +109,18 @@ const Create_New_Firm = () => {
             setFNameError('Enter valid name.');
             return;
         }
-        if (!validateEmail({ target: { value: firmEmail } })) {
-            setFEmailError('Invalid Email.');
-            return;
-        }
-        if (!validateGst({ target: { value: firmGstno } })) {
-            setGSTnoError('GST No. must be exactly 15 digits and contain letters and numbers.');
-            return;
-        }
-        if (!validateAddress({ target: { value: firmAddress } })) {
-            setAddressError('Address cannot be blank.');
-            return;
-        }
+        // if (!validateEmail({ target: { value: firmEmail } })) {
+        //     setFEmailError('Invalid Email.');
+        //     return;
+        // }
+        // if (!validateGst({ target: { value: firmGstno } })) {
+        //     setGSTnoError('GST No. must be exactly 15 digits and contain letters and numbers.');
+        //     return;
+        // }
+        // if (!validateAddress({ target: { value: firmAddress } })) {
+        //     setAddressError('Address cannot be blank.');
+        //     return;
+        // }
 
         APIAdmin().CREATE_FIRM(userId, {
             firm_name: firmName,

@@ -1,4 +1,6 @@
 const { createReceiptTransaction, getReceiptsByFirmId } = require('../models/receiptModel');
+const { dayBookHandler } = require('./dayBookController');
+
 
 const createReceipt = async (req, res) => {
   try {
@@ -38,4 +40,44 @@ const getReceiptsByFirm = async (req, res) => {
   }
 };
 
-module.exports = { createReceipt, getReceiptsByFirm };
+
+
+const getTotalReceiptAmtHandler = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    
+    // Simulate calling dayBookHandler, capture the response manually
+    const all_transactions = await new Promise((resolve, reject) => {
+      dayBookHandler(
+        { params: { user_id }, query: {} },
+        { 
+          status: (statusCode) => ({
+            send: (data) => resolve({ statusCode, data })
+          })
+        }
+      );
+    });
+    
+    // Handle the response from dayBookHandler
+    if (all_transactions.statusCode === 200 && all_transactions.data.status === true) {
+      const transactions = all_transactions.data.data;
+
+      // Filter and sum the payments
+      const receiptTotal = transactions
+        .filter(transaction => transaction.trans_type === 'receipt') // Filter for payment transactions
+        .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0); // Sum the amounts
+
+      console.log(`Total Payment Amount: ${receiptTotal}`);
+      res.status(200).send({ status: true, data: receiptTotal });
+    } else {
+      throw new Error("Invalid response or no data found.");
+    }
+  } catch (error) {
+    console.error("Error fetching transactions:", error.message);
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+
+
+module.exports = { createReceipt, getReceiptsByFirm, getTotalReceiptAmtHandler };

@@ -39,7 +39,7 @@ const getReceiptsByFirmId = async (to_firm_id, startDate, endDate) => {
   try {
     let sql = `
       SELECT 
-        t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_gl_id, t.remark, t.trans_type,
+        t.transaction_id, t.amount, t.transaction_date, t.from_gl_id, t.to_firm_id, t.to_gl_id, t.remark, t.trans_type,
         from_gl.gl_name AS from_gl_name, 
         to_gl.gl_name AS to_gl_name,
         from_firm.firm_name AS from_firm_name,

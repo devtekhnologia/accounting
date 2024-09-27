@@ -8,8 +8,8 @@ const createFirmHandler = async (req, res) => {
     const { firm_name, firm_email, firm_gstno, firm_address, firm_status } = req.body;
     const { user_id } = req.params;
 
-    if (!firm_name || !firm_email || !firm_gstno || !firm_address || !firm_status) {
-      return res.status(400).send({ status: false, message: 'All fields are required' });
+    if (!firm_name) {
+      return res.status(400).send({ status: false, message: 'Firm name is required' });
     }
 
     const existingFirmByName = await firmNameExists(firm_name);

@@ -33,6 +33,7 @@ class Auth {
 
   static logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     // localStorage.removeItem('userRole');
   }
 
@@ -40,6 +41,10 @@ class Auth {
     return localStorage.getItem('user');
   }
 }
+
+
+
+
 
 export { Auth, http };
 

@@ -91,6 +91,9 @@ publicRoutes.get('/ledger_report/:firm_id/:gl_id', ledgerReportController.getLed
 // publicRoutes.get('/cash_report/:firm_id/:gl_id', cashReportController.getCashReportHandler);
 publicRoutes.get('/cash_report_by_user/:user_id', cashReportController.getCashReportHandler);
 
+publicRoutes.get('/show_total_payment_amt/:user_id', paymentController.getTotalPaymentAmtHandler);
+publicRoutes.get('/show_total_receipt_amt/:user_id', receiptController.getTotalReceiptAmtHandler);
+
 
 // publicRoutes.post('/create_transactions', createTransaction);
 // publicRoutes.get('/fetch_transactions/:firm_id', getTransactions);

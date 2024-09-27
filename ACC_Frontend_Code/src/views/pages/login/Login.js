@@ -57,8 +57,13 @@ const Login = () => {
         role: userdata.role
       }));
 
+
+
+
       if (response.status && response.message === 'Login successful') {
         setSuccessMessage('Logged in successfully!');
+
+
         Auth.login(token);
 
         if (userdata.role === 'firm_user') {
@@ -68,7 +73,7 @@ const Login = () => {
         }
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 2000);
 
       } else {
         setErrorMessage('Unexpected response from server');
